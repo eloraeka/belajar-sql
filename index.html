@@ -553,10 +553,7 @@ WHERE missions.missionId = missionlogs.missionLogId;
 ROLLBACK;</pre>
         <div class="result-wrap"></div>
       </div>
-      <div class="callout">
-        <span class="icon">🔧</span>
-        <div class="callout-text"><b>Koreksi:</b> di catatan aslinya, baris penghubung ditulis <code>WHERE missions.MissionID - missionlogs.MissionLogID</code>, memakai tanda kurang <code>-</code>. Itu operator pengurangan, bukan perbandingan, jadi query-nya akan error atau tidak berjalan sesuai maksud. Yang benar memakai tanda sama dengan: <code>WHERE missions.missionId = missionlogs.missionLogId</code>.</div>
-      </div>
+    
     </div>
 
     <div class="topic">
