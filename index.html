@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Query & Console — Belajar Syntax SQL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0f14;
+    --panel: #121821;
+    --panel-2: #182130;
+    --border: #253044;
+    --text: #cdd6e4;
+    --text-dim: #7f8ea3;
+    --amber: #ffb454;
+    --green: #7ee787;
+    --blue: #6fb3f2;
+    --pink: #f2789f;
+    --purple: #b18cf5;
+    --cursor: #ffb454;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; scroll-behavior:smooth;}
+  body{display:flex; min-height:100vh;}
+
+  ::selection{ background: rgba(255,180,84,0.25); }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:270px; flex-shrink:0; background:var(--panel);
+    border-right:1px solid var(--border); padding:28px 18px;
+    position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .brand-dot{ width:10px; height:10px; border-radius:50%; background:var(--green); box-shadow:0 0 10px var(--green); }
+  .brand-name{ font-family:'Fira Code',monospace; font-weight:600; font-size:14px; color:var(--text); letter-spacing:0.5px; }
+  .brand-sub{ font-size:11px; color:var(--text-dim); margin-bottom:26px; padding-left:20px; }
+
+  .nav-group{ margin-bottom:22px; }
+  .nav-group-label{
+    font-family:'Fira Code',monospace; font-size:10.5px; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; padding-left:8px;
+  }
+  .nav-link{
+    display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:6px;
+    font-size:13.5px; color:var(--text-dim); text-decoration:none; cursor:pointer;
+    transition:background .15s, color .15s; line-height:1.3;
+  }
+  .nav-link:hover{ background:var(--panel-2); color:var(--text); }
+  .nav-link.active{ background:rgba(255,180,84,0.1); color:var(--amber); }
+  .nav-link .tag{ font-family:'Fira Code',monospace; font-size:10px; color:var(--text-dim); opacity:0.6; }
+
+  .sidebar-footer{
+    margin-top:20px; padding-top:16px; border-top:1px solid var(--border);
+    font-size:11px; color:var(--text-dim); font-family:'Fira Code',monospace; line-height:1.6;
+  }
+
+  /* ---------- Main ---------- */
+  main{ flex:1; min-width:0; }
+
+  .hero{
+    padding:64px 56px 48px; border-bottom:1px solid var(--border);
+    background:
+      radial-gradient(700px 300px at 85% -10%, rgba(111,179,242,0.08), transparent),
+      radial-gradient(500px 260px at 10% 0%, rgba(255,180,84,0.06), transparent);
+  }
+  .hero-eyebrow{ font-family:'Fira Code',monospace; font-size:12px; color:var(--green); letter-spacing:1px; margin-bottom:14px; }
+  .hero-eyebrow::before{ content:'> '; color:var(--text-dim); }
+  h1.hero-title{ font-size:clamp(30px,4vw,46px); font-weight:800; letter-spacing:-0.5px; line-height:1.1; color:#eef2f8; max-width:820px;}
+  .hero-title .accent{ color:var(--amber); }
+  .hero-desc{ margin-top:16px; max-width:640px; color:var(--text-dim); font-size:15.5px; line-height:1.7; }
+
+  .console-hero{
+    margin-top:32px; max-width:720px; background:var(--panel); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden; box-shadow:0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+  .console-topbar{ display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--panel-2); border-bottom:1px solid var(--border); }
+  .dot{ width:10px; height:10px; border-radius:50%; }
+  .dot.r{background:#ff5f57;} .dot.y{background:#febc2e;} .dot.g{background:#28c840;}
+  .console-title{ margin-left:8px; font-family:'Fira Code',monospace; font-size:11.5px; color:var(--text-dim); }
+  .console-body{ padding:18px; font-family:'Fira Code',monospace; font-size:13.5px; min-height:110px; }
+  .console-line{ display:flex; gap:8px; }
+  .console-line .prompt{ color:var(--green); }
+  #heroTyped{ color:var(--text); white-space:pre-wrap; }
+  .cursor-blink{ display:inline-block; width:7px; height:15px; background:var(--cursor); vertical-align:middle; animation:blink 1s step-start infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- Section ---------- */
+  .section{ padding:52px 56px; border-bottom:1px solid var(--border); }
+  .section-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:6px; }
+  .section-num{ font-family:'Fira Code',monospace; color:var(--text-dim); font-size:13px; }
+  .section-title{ font-size:26px; font-weight:800; color:#eef2f8; letter-spacing:-0.3px; }
+  .section-desc{ color:var(--text-dim); font-size:14.5px; max-width:680px; margin:10px 0 30px; line-height:1.7; }
+
+  .topic{ margin-bottom:38px; }
+  .topic-title{ font-size:17px; font-weight:700; color:var(--blue); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .topic-title .icon{ font-size:15px; }
+  .topic-text{ color:var(--text); font-size:14.5px; line-height:1.75; margin-bottom:14px; max-width:760px; }
+  .topic-text code{ font-family:'Fira Code',monospace; background:var(--panel-2); padding:1px 6px; border-radius:4px; font-size:13px; color:var(--amber); }
+
+  .callout{
+    display:flex; gap:10px; background:rgba(178,140,245,0.08); border:1px solid rgba(178,140,245,0.3);
+    border-left:3px solid var(--purple); padding:12px 14px; border-radius:6px; margin:14px 0 18px; max-width:760px;
+  }
+  .callout .icon{ font-size:15px; }
+  .callout-text{ font-size:13.5px; color:#dcd3f7; line-height:1.65; }
+  .callout-text b{ color:#fff; }
+
+  /* ---------- Query card ---------- */
+  .query-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:16px; max-width:800px;
+  }
+  .query-card-head{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 16px;
+    background:var(--panel-2); border-bottom:1px solid var(--border);
+  }
+  .query-card-head span{ font-family:'Fira Code',monospace; font-size:11.5px; color:var(--text-dim); }
+  .run-btn{
+    font-family:'Fira Code',monospace; font-size:11.5px; color:#0b0f14; background:var(--green);
+    border:none; padding:6px 14px; border-radius:6px; cursor:pointer; font-weight:600;
+    transition:transform .1s, box-shadow .15s;
+  }
+  .run-btn:hover{ box-shadow:0 0 14px rgba(126,231,135,0.5); transform:translateY(-1px); }
+  .run-btn:active{ transform:translateY(0); }
+  pre.sql{
+    margin:0; padding:16px 18px; font-family:'Fira Code',monospace; font-size:13px; line-height:1.7;
+    overflow-x:auto; white-space:pre;
+  }
+  .k{ color:var(--pink); } .fn{ color:var(--blue); } .str{ color:var(--green); } .num{ color:var(--amber); } .cm{color:var(--text-dim); font-style:italic;}
+
+  .result-wrap{ border-top:1px dashed var(--border); padding:0 16px; max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease; }
+  .result-wrap.open{ max-height:400px; padding:14px 16px 16px; }
+  .result-meta{ font-family:'Fira Code',monospace; font-size:11px; color:var(--green); margin-bottom:8px; }
+  table.result{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.result th{ text-align:left; color:var(--text-dim); font-family:'Fira Code',monospace; font-weight:600; padding:6px 10px; border-bottom:1px solid var(--border); }
+  table.result td{ padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--text); }
+  table.result tr:hover td{ background:rgba(255,255,255,0.02); }
+
+  /* ---------- Quiz ---------- */
+  .quiz-box{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:24px; max-width:760px; }
+  .quiz-progress{ font-family:'Fira Code',monospace; font-size:12px; color:var(--text-dim); margin-bottom:16px; }
+  .quiz-q{ font-size:15.5px; font-weight:700; color:#eef2f8; margin-bottom:16px; line-height:1.5; }
+  .quiz-q code{ font-family:'Fira Code',monospace; background:var(--panel-2); padding:1px 6px; border-radius:4px; color:var(--amber); }
+  .quiz-opts{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .quiz-opt{
+    text-align:left; padding:11px 14px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2);
+    color:var(--text); font-size:13.5px; cursor:pointer; font-family:'Manrope',sans-serif; transition:border-color .15s, background .15s;
+  }
+  .quiz-opt:hover{ border-color:var(--blue); }
+  .quiz-opt.correct{ border-color:var(--green); background:rgba(126,231,135,0.12); color:var(--green); }
+  .quiz-opt.wrong{ border-color:var(--pink); background:rgba(242,120,159,0.12); color:var(--pink); }
+  .quiz-feedback{ font-size:13px; color:var(--text-dim); min-height:20px; margin-bottom:14px; line-height:1.6; }
+  .quiz-nav{ display:flex; justify-content:space-between; align-items:center; }
+  .quiz-btn{
+    font-family:'Fira Code',monospace; font-size:12.5px; padding:8px 16px; border-radius:6px; border:1px solid var(--border);
+    background:var(--panel-2); color:var(--text); cursor:pointer;
+  }
+  .quiz-btn:disabled{ opacity:0.35; cursor:not-allowed; }
+  .quiz-btn.primary{ background:var(--amber); color:#0b0f14; border:none; font-weight:600; }
+  .quiz-score{ font-family:'Fira Code',monospace; font-size:12px; color:var(--green); }
+
+  footer{ padding:36px 56px; color:var(--text-dim); font-size:12.5px; font-family:'Fira Code',monospace; }
+
+  @media (max-width: 860px){
+    .sidebar{ display:none; }
+    .section, .hero{ padding:40px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand"><div class="brand-dot"></div><div class="brand-name">sql_belajar.db</div></div>
+  <div class="brand-sub">catatan minggu 2 &amp; 3</div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Week 2 — Query Dasar</div>
+    <a class="nav-link" data-target="sec-select"><span class="tag">01</span> SELECT &amp; Kolom</a>
+    <a class="nav-link" data-target="sec-where"><span class="tag">02</span> WHERE &amp; Kondisi</a>
+    <a class="nav-link" data-target="sec-wildcard"><span class="tag">03</span> Wildcard LIKE</a>
+    <a class="nav-link" data-target="sec-string"><span class="tag">04</span> String Function</a>
+    <a class="nav-link" data-target="sec-date"><span class="tag">05</span> Date Function</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Week 3 — Ubah Data</div>
+    <a class="nav-link" data-target="sec-join"><span class="tag">06</span> Simple Join</a>
+    <a class="nav-link" data-target="sec-update"><span class="tag">07</span> UPDATE</a>
+    <a class="nav-link" data-target="sec-alter"><span class="tag">08</span> ALTER TABLE</a>
+    <a class="nav-link" data-target="sec-delete"><span class="tag">09</span> DELETE</a>
+    <a class="nav-link" data-target="sec-transaction"><span class="tag">10</span> TRANSACTION</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Latihan</div>
+    <a class="nav-link" data-target="sec-quiz"><span class="tag">Q</span> Kuis Interaktif</a>
+  </div>
+
+  <div class="sidebar-footer">
+    klik "▶ Jalankan" pada tiap query<br>untuk lihat contoh hasilnya.
+  </div>
+</aside>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-eyebrow">catatan diparafrase &amp; dikoreksi</div>
+    <h1 class="hero-title">Belajar syntax <span class="accent">SQL</span> lewat console interaktif.</h1>
+    <p class="hero-desc">Semua materi dari catatanmu week 2 dan week 3 disusun ulang di sini, lengkap dengan contoh query yang bisa "dijalankan" untuk melihat kira-kira seperti apa hasilnya di tabel. Ada juga beberapa koreksi kecil dari catatan aslinya, ditandai dengan kotak ungu.</p>
+
+    <div class="console-hero">
+      <div class="console-topbar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <div class="console-title">mysql — mscustomer</div>
+      </div>
+      <div class="console-body">
+        <div class="console-line"><span class="prompt">mysql&gt;</span><span id="heroTyped"></span><span class="cursor-blink"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 SELECT -->
+  <section class="section" id="sec-select">
+    <div class="section-head"><span class="section-num">01</span><span class="section-title">SELECT &amp; Memilih Kolom</span></div>
+    <p class="section-desc">Perintah paling dasar untuk mengambil data dari sebuah tabel. Bisa memilih satu kolom, beberapa kolom, atau seluruh kolom.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Satu atau beberapa kolom</div>
+      <p class="topic-text">Untuk mengambil satu kolom, tulis nama kolomnya setelah <code>SELECT</code>. Untuk beberapa kolom, pisahkan dengan koma. Urutan kolom pada hasil akan mengikuti urutan penulisan di query, bukan urutan aslinya di tabel.</p>
+      <div class="query-card" data-result="q1">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT customerName, customerAddress, customerGender
+FROM mscustomer;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Semua kolom dengan *</div>
+      <p class="topic-text">Tanda bintang <code>*</code> berarti "semua kolom". Praktis untuk eksplorasi awal, tapi di aplikasi nyata sebaiknya sebutkan nama kolom secara eksplisit — lebih cepat dan lebih jelas kolom apa saja yang sebenarnya dipakai.</p>
+      <div class="query-card" data-result="q2">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mscustomer;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 WHERE -->
+  <section class="section" id="sec-where">
+    <div class="section-head"><span class="section-num">02</span><span class="section-title">WHERE &amp; Conditional Query</span></div>
+    <p class="section-desc">Menyaring baris data berdasarkan syarat tertentu. Urutan eksekusi logisnya: <code>FROM</code> dulu (menentukan tabel sumber), baru <code>WHERE</code> (menyaring barisnya).</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Kesetaraan dengan =</div>
+      <p class="topic-text">Operator <code>=</code> mencocokkan nilai secara persis (exact match).</p>
+      <div class="query-card" data-result="q3">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT customerName, customerAddress, customerGender
+FROM mscustomer
+WHERE customerGender = 'female';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Multiple condition: AND &amp; OR</div>
+      <p class="topic-text"><code>AND</code> mengharuskan kedua syarat terpenuhi sekaligus. <code>OR</code> cukup salah satu syarat saja yang terpenuhi.</p>
+      <div class="query-card" data-result="q4">
+        <div class="query-card-head"><span>msproduct — AND</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM msproduct
+WHERE categoryId = 'CT002' AND productStock = 100;</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <div class="query-card" data-result="q5">
+        <div class="query-card-head"><span>msproduct — OR</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM msproduct
+WHERE categoryId = 'CT002' OR categoryId = 'CT003';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> IN sebagai group condition</div>
+      <p class="topic-text"><code>IN (...)</code> adalah cara singkat untuk menulis banyak kondisi <code>OR</code> pada kolom yang sama.</p>
+      <div class="query-card" data-result="q6">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM msproduct
+WHERE categoryId IN ('CT002', 'CT003', 'CT005');</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Operator pembanding angka</div>
+      <p class="topic-text">Untuk kolom bertipe angka, bisa memakai operator pembanding seperti <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>.</p>
+      <div class="query-card" data-result="q7">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM msproduct
+WHERE productPrice > 200000;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="icon">🔧</span>
+      <div class="callout-text"><b>Koreksi:</b> di catatan aslinya ada contoh <code>customerGender LIKE 'female'</code> tanpa tanda <code>%</code>. Ini valid, tapi secara hasil <b>sama persis</b> dengan <code>customerGender = 'female'</code> — <code>LIKE</code> baru terasa bedanya kalau dipakai bersama wildcard (<code>%</code> atau <code>_</code>). Jadi untuk pencocokan persis, lebih jelas pakai <code>=</code>; pakai <code>LIKE</code> saat memang butuh pencocokan sebagian.</div>
+    </div>
+  </section>
+
+  <!-- 03 WILDCARD -->
+  <section class="section" id="sec-wildcard">
+    <div class="section-head"><span class="section-num">03</span><span class="section-title">Wildcard &amp; LIKE</span></div>
+    <p class="section-desc">Wildcard dipakai bersama <code>LIKE</code> untuk mencocokkan sebagian teks, bukan teks yang persis sama.</p>
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> % sebagai penampung karakter bebas</div>
+      <p class="topic-text">Tanda <code>%</code> berarti "abaikan berapa pun karakter di posisi ini". Contoh <code>'a%'</code> berarti mencari data yang <b>diawali</b> huruf a, tidak peduli apa pun setelahnya.</p>
+      <div class="query-card" data-result="q8">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mscustomer
+WHERE customerName LIKE 'a%';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="icon">💡</span>
+      <div class="callout-text">Selain <code>%</code>, ada juga <code>_</code> yang mewakili tepat satu karakter bebas (misalnya <code>'A_i'</code> cocok dengan "Adi" atau "Ani"). Simbol <code>^</code> dan <code>$</code> yang disebut di catatan aslinya adalah bagian dari <b>regular expression</b> (dipakai lewat <code>REGEXP</code>), bukan bagian dari <code>LIKE</code> — <code>^</code> menandai awal teks dan <code>$</code> menandai akhir teks.</div>
+    </div>
+  </section>
+
+  <!-- 04 STRING FUNCTION -->
+  <section class="section" id="sec-string">
+    <div class="section-head"><span class="section-num">04</span><span class="section-title">String Function</span></div>
+    <p class="section-desc">Fungsi bawaan SQL untuk mengolah data bertipe teks langsung di dalam query.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> LEFT &amp; RIGHT</div>
+      <p class="topic-text"><code>LEFT(kolom, n)</code> mengambil n karakter dari sisi kiri. <code>RIGHT(kolom, n)</code> mengambil n karakter dari sisi kanan. Alias <code>AS</code> dipakai untuk mengganti nama kolom pada hasil tampilan.</p>
+      <div class="query-card" data-result="q9">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT LEFT(customerName, 5) AS customerName
+FROM mscustomer;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> LOWER &amp; UPPER</div>
+      <p class="topic-text">Mengubah teks menjadi huruf kecil semua (<code>LOWER</code>) atau huruf besar semua (<code>UPPER</code>).</p>
+      <div class="query-card" data-result="q10">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT customerName,
+       LOWER(customerName) AS lowerCN,
+       UPPER(customerName) AS upperCN
+FROM mscustomer;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> CONCAT</div>
+      <p class="topic-text">Menggabungkan beberapa nilai (teks tetap dan/atau nilai kolom) menjadi satu string. Bisa taruh teks tambahan di depan, belakang, atau di kedua sisi.</p>
+      <div class="query-card" data-result="q11">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT CONCAT('Customer ', customerName, ' Thank you') AS customerMessage
+FROM mscustomer;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> LENGTH, REPLACE, SUBSTR</div>
+      <p class="topic-text"><code>LENGTH(kolom)</code> menghitung jumlah karakter. <code>REPLACE(kolom, dicari, pengganti)</code> mengganti sebagian teks. <code>SUBSTR(kolom, start, panjang)</code> mengambil potongan teks mulai dari indeks tertentu.</p>
+      <div class="query-card" data-result="q12">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT productName,
+       REPLACE(productName, 'Salmon', 'Tuna') AS renamed,
+       SUBSTR(productName, 2, 5) AS potongan
+FROM msproduct;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 DATE FUNCTION -->
+  <section class="section" id="sec-date">
+    <div class="section-head"><span class="section-num">05</span><span class="section-title">Date Function</span></div>
+    <p class="section-desc">Fungsi untuk membaca dan menghitung selisih tanggal.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> CURDATE() &amp; NOW()</div>
+      <p class="topic-text"><code>CURDATE()</code> mengembalikan tanggal hari ini saja. <code>NOW()</code> mengembalikan tanggal sekaligus jam saat query dijalankan.</p>
+      <div class="query-card" data-result="q13">
+        <div class="query-card-head"><span>function</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT CURDATE() AS tanggalHariIni, NOW() AS waktuSekarang;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> DATEDIFF &amp; TIMESTAMPDIFF</div>
+      <p class="topic-text"><code>DATEDIFF(a, b)</code> menghitung selisih dua tanggal dalam satuan <b>hari</b> (hasilnya a &minus; b). <code>TIMESTAMPDIFF(unit, a, b)</code> lebih fleksibel karena satuannya bisa ditentukan sendiri (MONTH, YEAR, dst), dan hasilnya b &minus; a — jadi urutan parameternya kebalik dari DATEDIFF, perlu hati-hati.</p>
+      <div class="query-card" data-result="q14">
+        <div class="query-card-head"><span>transactionheader</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT transactionDate,
+       DATEDIFF(curdate(), transactionDate) AS selisihHari,
+       TIMESTAMPDIFF(MONTH, transactionDate, curdate()) AS selisihBulan
+FROM transactionheader;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> DAY, MONTH, YEAR</div>
+      <p class="topic-text">Mengambil bagian tanggal (hari), bulan, atau tahun dari sebuah kolom tanggal.</p>
+      <div class="query-card" data-result="q15">
+        <div class="query-card-head"><span>transactionheader</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT transactionDate,
+       DAY(transactionDate)   AS tgl,
+       MONTH(transactionDate) AS bln,
+       YEAR(transactionDate)  AS thn
+FROM transactionheader;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 JOIN -->
+  <section class="section" id="sec-join">
+    <div class="section-head"><span class="section-num">06</span><span class="section-title">Simple Join</span></div>
+    <p class="section-desc">Menggabungkan data dari dua tabel lewat atribut yang nilainya sama, tanpa memakai keyword <code>JOIN</code>. Kolom yang disamakan tidak harus foreign key ke primary key, cukup dua atribut yang nilainya berkorespondensi.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Tanpa WHERE → cartesian product</div>
+      <p class="topic-text">Menulis dua nama tabel di <code>FROM</code> tanpa syarat penghubung akan menghasilkan <b>semua kemungkinan pasangan baris</b> (cartesian product / permutasi), bukan data yang benar-benar berelasi.</p>
+      <div class="query-card" data-result="q16">
+        <div class="query-card-head"><span>missions × astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM missions, astronauts;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Dengan WHERE → data yang berelasi</div>
+      <p class="topic-text">Menambahkan <code>WHERE tabelA.kolom = tabelB.kolom</code> menyaring hanya pasangan baris yang memang saling berhubungan.</p>
+      <div class="query-card" data-result="q17">
+        <div class="query-card-head"><span>missions ⋈ astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT missionId, missions.astronautId, astronautName
+FROM missions, astronauts
+WHERE missions.astronautId = astronauts.astronautId;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 UPDATE -->
+  <section class="section" id="sec-update">
+    <div class="section-head"><span class="section-num">07</span><span class="section-title">UPDATE — Mengubah Isi Baris</span></div>
+    <p class="section-desc">Bagian dari DML (Data Manipulation Language), dipakai untuk mengubah nilai pada baris yang sudah ada.</p>
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Update satu atau beberapa kolom sekaligus</div>
+      <p class="topic-text">Selalu sertakan <code>WHERE</code> agar perubahan hanya menyasar baris yang dimaksud — tanpa <code>WHERE</code>, seluruh baris di tabel akan ikut berubah.</p>
+      <div class="query-card" data-result="q18">
+        <div class="query-card-head"><span>astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">UPDATE astronauts
+SET experienceYears = 10
+WHERE astronautName = 'Maya Chen';
+
+UPDATE astronauts
+SET astronautName = 'Maya C.', experienceYears = 20
+WHERE astronautId = 'AS002';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 ALTER -->
+  <section class="section" id="sec-alter">
+    <div class="section-head"><span class="section-num">08</span><span class="section-title">ALTER TABLE</span></div>
+    <p class="section-desc">Bagian dari DDL (Data Definition Language) — mengubah struktur tabel: menambah kolom, menambah aturan (constraint), atau mengganti nama.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Menambah kolom baru</div>
+      <div class="query-card" data-result="q19">
+        <div class="query-card-head"><span>astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">ALTER TABLE astronauts
+ADD COLUMN gender ENUM('Male','Female');</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Menambah constraint (aturan validasi)</div>
+      <p class="topic-text">Constraint membatasi nilai apa saja yang boleh masuk ke sebuah kolom. Memberi nama pada constraint (lewat <code>CONSTRAINT nama_constraint</code>) membuatnya lebih mudah dikenali dan dihapus nanti.</p>
+      <div class="query-card" data-result="q20">
+        <div class="query-card-head"><span>astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">ALTER TABLE astronauts
+ADD CONSTRAINT chk_id_format CHECK (astronautId REGEXP '^AS[0-9]{3}$');
+
+ALTER TABLE astronauts
+ADD CONSTRAINT chk_min_experience CHECK (experienceYears >= 3);</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <div class="callout">
+        <span class="icon">🔧</span>
+        <div class="callout-text"><b>Koreksi:</b> di catatan aslinya, nama constraint ditulis setelah <code>CHECK(...)</code> memakai backtick, misalnya <code>ADD CONSTRAINT `Minimum experience years` CHECK(...)</code>. Urutan standarnya terbalik: nama constraint ditulis <b>sebelum</b> <code>CHECK</code>, yaitu <code>ADD CONSTRAINT nama_constraint CHECK(...)</code>. Nama constraint juga sebaiknya tanpa spasi (pakai underscore) supaya tidak perlu backtick.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 DELETE -->
+  <section class="section" id="sec-delete">
+    <div class="section-head"><span class="section-num">09</span><span class="section-title">DELETE — Menghapus Baris</span></div>
+    <p class="section-desc">Menghapus seluruh baris yang cocok dengan syarat <code>WHERE</code> — bukan menghapus kolom tertentu saja.</p>
+    <div class="topic">
+      <div class="query-card" data-result="q21">
+        <div class="query-card-head"><span>missionlogs</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">DELETE FROM missionlogs
+WHERE missionLogId = 'ML001';</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <div class="callout">
+        <span class="icon">⚠️</span>
+        <div class="callout-text"><b>Hati-hati:</b> <code>DELETE FROM nama_tabel;</code> tanpa <code>WHERE</code> akan menghapus <b>seluruh baris</b> di tabel tersebut. Selalu cek dulu dengan <code>SELECT</code> memakai syarat yang sama sebelum menjalankan <code>DELETE</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 TRANSACTION -->
+  <section class="section" id="sec-transaction">
+    <div class="section-head"><span class="section-num">10</span><span class="section-title">TRANSACTION</span></div>
+    <p class="section-desc">Membungkus beberapa query menjadi satu sesi perubahan. Kalau di tengah jalan ada yang gagal atau belum yakin, seluruh perubahan sementara ini bisa dibatalkan sekaligus.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Alur START TRANSACTION → ROLLBACK</div>
+      <div class="query-card" data-result="q22">
+        <div class="query-card-head"><span>missions + missionlogs</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">START TRANSACTION;
+
+UPDATE missions
+SET missionStatus = 'Completed'
+WHERE missionId = 'MI002';
+
+UPDATE missionlogs
+SET logMessage = 'Something error in this event'
+WHERE missionId = 'MI002';
+
+SELECT missions.missionId, missionStatus, logMessage
+FROM missions, missionlogs
+WHERE missions.missionId = missionlogs.missionLogId;
+
+ROLLBACK;</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <div class="callout">
+        <span class="icon">🔧</span>
+        <div class="callout-text"><b>Koreksi:</b> di catatan aslinya, baris penghubung ditulis <code>WHERE missions.MissionID - missionlogs.MissionLogID</code>, memakai tanda kurang <code>-</code>. Itu operator pengurangan, bukan perbandingan, jadi query-nya akan error atau tidak berjalan sesuai maksud. Yang benar memakai tanda sama dengan: <code>WHERE missions.missionId = missionlogs.missionLogId</code>.</div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> ROLLBACK vs COMMIT</div>
+      <p class="topic-text"><code>ROLLBACK</code> membatalkan semua perubahan yang dilakukan sejak <code>START TRANSACTION</code>, mengembalikan data ke kondisi semula. <code>COMMIT</code> sebaliknya — mengunci perubahan tersebut agar permanen tersimpan di database.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="section" id="sec-quiz">
+    <div class="section-head"><span class="section-num">Q</span><span class="section-title">Kuis Interaktif</span></div>
+    <p class="section-desc">Enam pertanyaan singkat untuk menguji pemahaman materi di atas.</p>
+
+    <div class="quiz-box">
+      <div class="quiz-progress" id="quizProgress">Soal 1 / 6</div>
+      <div class="quiz-q" id="quizQ"></div>
+      <div class="quiz-opts" id="quizOpts"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-nav">
+        <span class="quiz-score" id="quizScore">Skor: 0 / 6</span>
+        <button class="quiz-btn primary" id="quizNext" disabled>Soal berikutnya →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>sql_belajar.db — dibuat dari catatan kuliahmu, siap dipakai kapan saja.</footer>
+</main>
+
+<script>
+/* ---------- Sidebar active-link scroll ---------- */
+const links = document.querySelectorAll('.nav-link');
+const sections = [...document.querySelectorAll('.section')];
+links.forEach(l => l.addEventListener('click', () => {
+  document.getElementById(l.dataset.target)?.scrollIntoView({behavior:'smooth'});
+}));
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.toggle('active', l.dataset.target === e.target.id));
+    }
+  });
+}, {rootMargin:'-20% 0px -70% 0px'});
+sections.forEach(s=>io.observe(s));
+
+/* ---------- Hero typing effect ---------- */
+const heroText = "SELECT customerName FROM mscustomer WHERE customerGender = 'female';";
+const heroEl = document.getElementById('heroTyped');
+let i = 0;
+function typeHero(){
+  if(i <= heroText.length){
+    heroEl.textContent = heroText.slice(0, i);
+    i++;
+    setTimeout(typeHero, 32);
+  }
+}
+typeHero();
+
+/* ---------- SQL syntax highlighter ---------- */
+const KEYWORDS = ['SELECT','FROM','WHERE','AND','OR','IN','LIKE','AS','UPDATE','SET','ALTER','TABLE','ADD','COLUMN','CONSTRAINT','CHECK','DELETE','START','TRANSACTION','ROLLBACK','COMMIT','ORDER','BY','ENUM'];
+const FUNCS = ['LEFT','RIGHT','LOWER','UPPER','CONCAT','LENGTH','REPLACE','SUBSTR','CURDATE','NOW','DATEDIFF','TIMESTAMPDIFF','DAY','MONTH','YEAR','REGEXP'];
+function highlight(code){
+  let escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  escaped = escaped.replace(/'([^']*)'/g, m => `§STR§${m}§/STR§`);
+  const kwPattern = new RegExp('\\b(' + KEYWORDS.join('|') + ')\\b', 'g');
+  const fnPattern = new RegExp('\\b(' + FUNCS.join('|') + ')(?=\\()', 'g');
+  escaped = escaped.replace(kwPattern, '<span class="k">$1</span>');
+  escaped = escaped.replace(fnPattern, '<span class="fn">$1</span>');
+  escaped = escaped.replace(/\b(\d+(\.\d+)?)\b/g, '<span class="num">$1</span>');
+  escaped = escaped.replace(/§STR§([^§]*)§\/STR§/g, '<span class="str">$1</span>');
+  return escaped;
+}
+document.querySelectorAll('pre.sql').forEach(pre=>{
+  pre.innerHTML = highlight(pre.textContent);
+});
+
+/* ---------- Mock query results ---------- */
+const RESULTS = {
+  q1: {cols:['customerName','customerAddress','customerGender'], rows:[
+    ['Ani Wijaya','Jl. Merdeka No 1','Female'],
+    ['Budi Santoso','Jl. Sudirman No 5','Male'],
+    ['Amanda Putri','Jl. Thamrin No 9','Female'],
+    ['Andi Saputra','Jl. Gatot Subroto No 3','Male']]},
+  q2: {cols:['customerId','customerName','customerAddress','customerGender'], rows:[
+    ['CU001','Ani Wijaya','Jl. Merdeka No 1','Female'],
+    ['CU002','Budi Santoso','Jl. Sudirman No 5','Male'],
+    ['CU003','Amanda Putri','Jl. Thamrin No 9','Female'],
+    ['CU004','Andi Saputra','Jl. Gatot Subroto No 3','Male']]},
+  q3: {cols:['customerName','customerAddress','customerGender'], rows:[
+    ['Ani Wijaya','Jl. Merdeka No 1','Female'],
+    ['Amanda Putri','Jl. Thamrin No 9','Female']]},
+  q4: {cols:['productId','productName','categoryId','productPrice','productStock'], rows:[
+    ['PR002','Tuna Roll','CT002','95000','100']]},
+  q5: {cols:['productId','productName','categoryId','productPrice','productStock'], rows:[
+    ['PR001','Salmon Sashimi','CT002','120000','50'],
+    ['PR002','Tuna Roll','CT002','95000','100'],
+    ['PR003','Keyboard Mekanik','CT003','850000','30'],
+    ['PR004','Mouse Wireless','CT003','250000','100']]},
+  q6: {cols:['productId','productName','categoryId','productPrice','productStock'], rows:[
+    ['PR001','Salmon Sashimi','CT002','120000','50'],
+    ['PR002','Tuna Roll','CT002','95000','100'],
+    ['PR003','Keyboard Mekanik','CT003','850000','30'],
+    ['PR004','Mouse Wireless','CT003','250000','100'],
+    ['PR005','Meja Kerja','CT005','1200000','10']]},
+  q7: {cols:['productId','productName','categoryId','productPrice','productStock'], rows:[
+    ['PR003','Keyboard Mekanik','CT003','850000','30'],
+    ['PR004','Mouse Wireless','CT003','250000','100'],
+    ['PR005','Meja Kerja','CT005','1200000','10']]},
+  q8: {cols:['customerId','customerName','customerAddress','customerGender'], rows:[
+    ['CU001','Ani Wijaya','Jl. Merdeka No 1','Female'],
+    ['CU003','Amanda Putri','Jl. Thamrin No 9','Female'],
+    ['CU004','Andi Saputra','Jl. Gatot Subroto No 3','Male']]},
+  q9: {cols:['customerName (5 huruf pertama)'], rows:[
+    ['Ani W'],['Budi '],['Amand'],['Andi ']]},
+  q10: {cols:['customerName','lowerCN','upperCN'], rows:[
+    ['Ani Wijaya','ani wijaya','ANI WIJAYA'],
+    ['Budi Santoso','budi santoso','BUDI SANTOSO']]},
+  q11: {cols:['customerMessage'], rows:[
+    ['Customer Ani Wijaya Thank you'],
+    ['Customer Budi Santoso Thank you'],
+    ['Customer Amanda Putri Thank you']]},
+  q12: {cols:['productName','renamed','potongan'], rows:[
+    ['Salmon Sashimi','Tuna Sashimi','almon'],
+    ['Tuna Roll','Tuna Roll','una R']]},
+  q13: {cols:['tanggalHariIni','waktuSekarang'], rows:[
+    ['2026-07-12','2026-07-12 14:32:07']]},
+  q14: {cols:['transactionDate','selisihHari','selisihBulan'], rows:[
+    ['2026-05-01','72','2'],
+    ['2026-06-20','22','0']]},
+  q15: {cols:['transactionDate','tgl','bln','thn'], rows:[
+    ['2026-05-01','1','5','2026'],
+    ['2026-06-20','20','6','2026']]},
+  q16: {cols:['missionId','...','astronautId','astronautName','...'], rows:[
+    ['MI001','...','AS001','Maya Chen','...'],
+    ['MI001','...','AS002','Kevin Wu','...'],
+    ['MI001','...','AS003','Sarah Lee','...'],
+    ['MI002','...','AS001','Maya Chen','...'],
+    ['MI002','...','AS002','Kevin Wu','...'],
+    ['MI002','...','AS003','Sarah Lee','...']], note:'6 baris = 2 misi × 3 astronot (semua kombinasi, banyak yang tidak relevan)'},
+  q17: {cols:['missionId','astronautId','astronautName'], rows:[
+    ['MI001','AS001','Maya Chen'],
+    ['MI002','AS002','Kevin Wu']], note:'hanya pasangan yang benar-benar berelasi'},
+  q18: {cols:['astronautId','astronautName','experienceYears'], rows:[
+    ['AS002','Maya C.','20']], note:'baris yang cocok dengan WHERE sudah berubah'},
+  q19: {cols:['astronautId','astronautName','experienceYears','gender'], rows:[
+    ['AS001','Maya Chen','8','NULL'],
+    ['AS002','Kevin Wu','15','NULL']], note:'kolom baru "gender" ditambahkan, isinya NULL untuk baris lama'},
+  q20: {cols:['status'], rows:[
+    ['Constraint chk_id_format ditambahkan'],
+    ['Constraint chk_min_experience ditambahkan']]},
+  q21: {cols:['status'], rows:[
+    ['1 baris terhapus dari missionlogs (missionLogId = ML001)']]},
+  q22: {cols:['missionId','missionStatus','logMessage'], rows:[
+    ['MI002','Completed','Something error in this event']], note:'hasil SELECT sebelum ROLLBACK — setelah ROLLBACK, kedua UPDATE di atas dibatalkan dan data kembali seperti semula'}
+};
+
+document.querySelectorAll('.query-card').forEach(card=>{
+  const btn = card.querySelector('.run-btn');
+  const wrap = card.querySelector('.result-wrap');
+  const key = card.dataset.result;
+  btn.addEventListener('click', ()=>{
+    const isOpen = wrap.classList.contains('open');
+    if(isOpen){ wrap.classList.remove('open'); btn.textContent='▶ Jalankan'; return; }
+    const data = RESULTS[key];
+    if(!wrap.dataset.built){
+      let html = `<div class="result-meta">✓ ${data.rows.length} baris dikembalikan${data.note ? ' — ' + data.note : ''}</div>`;
+      html += '<table class="result"><thead><tr>' + data.cols.map(c=>`<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+      data.rows.forEach(r=>{ html += '<tr>' + r.map(v=>`<td>${v}</td>`).join('') + '</tr>'; });
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+      wrap.dataset.built = '1';
+    }
+    wrap.classList.add('open');
+    btn.textContent = '■ Sembunyikan';
+  });
+});
+
+/* ---------- Quiz ---------- */
+const QUIZ = [
+  {q:"Apa perbedaan hasil antara <code>customerGender = 'female'</code> dan <code>customerGender LIKE 'female'</code> (tanpa wildcard)?",
+   opts:["Hasilnya sama persis","LIKE selalu lebih lambat tapi beda hasil","= hanya bisa dipakai untuk angka","LIKE otomatis mengabaikan huruf besar/kecil"], correct:0,
+   fb:"Tanpa wildcard, LIKE berperilaku identik dengan =. Bedanya baru terasa saat dipakai bersama % atau _."},
+  {q:"Query <code>SELECT * FROM msproduct WHERE categoryId = 'CT002' AND productStock = 100</code> akan mengembalikan baris yang...",
+   opts:["categoryId CT002 saja, stock berapa pun","stock 100 saja, category apa pun","categoryId CT002 DAN sekaligus stock 100","categoryId CT002 ATAU stock 100"], correct:2,
+   fb:"AND mengharuskan kedua syarat terpenuhi bersamaan pada baris yang sama."},
+  {q:"Apa fungsi tanda <code>%</code> di dalam pola LIKE, misalnya <code>'a%'</code>?",
+   opts:["Tepat satu karakter bebas","Nol atau lebih karakter bebas di posisi itu","Hanya cocok dengan angka","Membalik urutan pencarian"], correct:1,
+   fb:"% mewakili sejumlah karakter apa pun (termasuk nol karakter) di posisi tersebut."},
+  {q:"Antara <code>DATEDIFF(a, b)</code> dan <code>TIMESTAMPDIFF(unit, a, b)</code>, urutan pengurangannya adalah...",
+   opts:["Keduanya sama-sama a − b","DATEDIFF = a − b, TIMESTAMPDIFF = b − a","DATEDIFF = b − a, TIMESTAMPDIFF = a − b","Keduanya sama-sama b − a"], correct:1,
+   fb:"DATEDIFF menghitung parameter pertama dikurangi kedua, sedangkan TIMESTAMPDIFF menghitung parameter ketiga dikurangi kedua."},
+  {q:"Query <code>SELECT * FROM missions, astronauts</code> tanpa WHERE akan menghasilkan...",
+   opts:["Error karena tidak ada JOIN","Hanya baris yang astronautId-nya cocok","Semua kemungkinan pasangan baris (cartesian product)","Hanya data dari tabel missions"], correct:2,
+   fb:"Tanpa syarat penghubung di WHERE, setiap baris di tabel pertama dipasangkan dengan setiap baris di tabel kedua."},
+  {q:"Setelah <code>START TRANSACTION</code>, beberapa UPDATE dijalankan, lalu dipanggil <code>ROLLBACK</code>. Apa yang terjadi pada data?",
+   opts:["Semua perubahan sejak START TRANSACTION dibatalkan","Perubahan tersimpan permanen","Hanya UPDATE pertama yang dibatalkan","Tabel ikut terhapus"], correct:0,
+   fb:"ROLLBACK mengembalikan data ke kondisi sebelum transaksi dimulai. Untuk menyimpan permanen, dipakai COMMIT."}
+];
+let qi = 0, score = 0, answered = false;
+const quizQ = document.getElementById('quizQ');
+const quizOpts = document.getElementById('quizOpts');
+const quizFeedback = document.getElementById('quizFeedback');
+const quizNext = document.getElementById('quizNext');
+const quizProgress = document.getElementById('quizProgress');
+const quizScore = document.getElementById('quizScore');
+
+function renderQuiz(){
+  answered = false;
+  const item = QUIZ[qi];
+  quizProgress.textContent = `Soal ${qi+1} / ${QUIZ.length}`;
+  quizQ.innerHTML = item.q;
+  quizFeedback.textContent = '';
+  quizNext.disabled = true;
+  quizNext.textContent = qi === QUIZ.length - 1 ? 'Selesai →' : 'Soal berikutnya →';
+  quizOpts.innerHTML = '';
+  item.opts.forEach((opt, idx)=>{
+    const b = document.createElement('button');
+    b.className = 'quiz-opt';
+    b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      if(answered) return;
+      answered = true;
+      const correct = idx === item.correct;
+      b.classList.add(correct ? 'correct' : 'wrong');
+      if(!correct){
+        [...quizOpts.children][item.correct].classList.add('correct');
+      } else {
+        score++;
+        quizScore.textContent = `Skor: ${score} / ${QUIZ.length}`;
+      }
+      quizFeedback.textContent = (correct ? '✓ Benar. ' : '✗ Kurang tepat. ') + item.fb;
+      quizNext.disabled = false;
+    });
+    quizOpts.appendChild(b);
+  });
+}
+quizNext.addEventListener('click', ()=>{
+  if(qi < QUIZ.length - 1){
+    qi++;
+    renderQuiz();
+  } else {
+    quizQ.textContent = `Selesai! Skor akhir kamu: ${score} / ${QUIZ.length}.`;
+    quizOpts.innerHTML = '';
+    quizFeedback.textContent = score === QUIZ.length ? 'Mantap, semua benar 🎉' : 'Coba scroll ke atas lagi untuk review bagian yang masih kurang.';
+    quizNext.textContent = '↺ Ulangi kuis';
+    quizNext.disabled = false;
+    quizNext.onclick = ()=>{ qi=0; score=0; quizScore.textContent = `Skor: 0 / ${QUIZ.length}`; quizNext.onclick=null; quizNext.addEventListener('click', arguments.callee); renderQuiz(); location.reload(); };
+  }
+});
+renderQuiz();
+</script>
+
+</body>
+</html>
