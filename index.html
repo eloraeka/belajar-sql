@@ -303,10 +303,6 @@ WHERE productPrice > 200000;</pre>
       </div>
     </div>
 
-    <div class="callout">
-      <span class="icon">🔧</span>
-      <div class="callout-text"><b>Koreksi:</b> di catatan aslinya ada contoh <code>customerGender LIKE 'female'</code> tanpa tanda <code>%</code>. Ini valid, tapi secara hasil <b>sama persis</b> dengan <code>customerGender = 'female'</code> — <code>LIKE</code> baru terasa bedanya kalau dipakai bersama wildcard (<code>%</code> atau <code>_</code>). Jadi untuk pencocokan persis, lebih jelas pakai <code>=</code>; pakai <code>LIKE</code> saat memang butuh pencocokan sebagian.</div>
-    </div>
   </section>
 
   <!-- 03 WILDCARD -->
@@ -504,7 +500,7 @@ ADD CONSTRAINT chk_min_experience CHECK (experienceYears >= 3);</pre>
       </div>
       <div class="callout">
         <span class="icon">🔧</span>
-        <div class="callout-text"><b>Koreksi:</b> di catatan aslinya, nama constraint ditulis setelah <code>CHECK(...)</code> memakai backtick, misalnya <code>ADD CONSTRAINT `Minimum experience years` CHECK(...)</code>. Urutan standarnya terbalik: nama constraint ditulis <b>sebelum</b> <code>CHECK</code>, yaitu <code>ADD CONSTRAINT nama_constraint CHECK(...)</code>. Nama constraint juga sebaiknya tanpa spasi (pakai underscore) supaya tidak perlu backtick.</div>
+        <div class="callout-text"> nama constraint ditulis <b>sebelum</b> <code>CHECK</code>, yaitu <code>ADD CONSTRAINT nama_constraint CHECK(...)</code>. Nama constraint juga sebaiknya tanpa spasi (pakai underscore) supaya tidak perlu backtick.</div>
       </div>
     </div>
   </section>
