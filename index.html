@@ -85,7 +85,7 @@
     .section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
     .section-num { font-family: 'Fira Code', monospace; color: var(--text-dim); font-size: 13px; }
     .section-title { font-size: 26px; font-weight: 800; color: #eef2f8; letter-spacing: -0.3px; }
-    .section-desc { color: var(--text-dim); font-size: 14.5px; max-width: 680px; margin: 10px 0 30px; line-height: 1.7; }
+    .section-desc { color: var(--text-dim); font-size: 14.5px; max-width: 700px; margin: 10px 0 30px; line-height: 1.7; }
 
     .topic { margin-bottom: 38px; }
     .topic-title { font-size: 17px; font-weight: 700; color: var(--blue); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -97,12 +97,32 @@
       display: flex; gap: 10px; background: rgba(178,140,245,0.08); border: 1px solid rgba(178,140,245,0.3);
       border-left: 3px solid var(--purple); padding: 12px 14px; border-radius: 6px; margin: 14px 0 18px; max-width: 760px;
     }
+    .callout.info { background: rgba(111,179,242,0.08); border-color: rgba(111,179,242,0.3); border-left-color: var(--blue); }
+    .callout.warn { background: rgba(242,120,159,0.08); border-color: rgba(242,120,159,0.3); border-left-color: var(--pink); }
     .callout .icon { font-size: 15px; }
     .callout-text { font-size: 13.5px; color: #dcd3f7; line-height: 1.65; }
     .callout-text b { color: #fff; }
+    .callout.info .callout-text { color: #cfe4fb; }
+    .callout.warn .callout-text { color: #fbd3e0; }
+
+    /* dictionary term badges */
+    .term-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+    .term-badge {
+      font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 600; color: #0b0f14;
+      background: var(--blue); padding: 3px 11px; border-radius: 5px; letter-spacing: 0.3px;
+    }
+    .term-badge.op { background: var(--pink); }
+    .term-badge.fn { background: var(--green); }
+    .term-badge.dt { background: var(--purple); color: #fff; }
+    .term-def { font-size: 13.5px; color: var(--text-dim); }
+    .term-syntax {
+      font-family: 'Fira Code', monospace; font-size: 12.5px; color: var(--amber);
+      background: var(--panel-2); border: 1px solid var(--border); padding: 6px 12px;
+      border-radius: 6px; margin-bottom: 12px; display: inline-block;
+    }
 
     .query-card {
-      background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px; max-width: 800px;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 18px; max-width: 800px;
     }
     .query-card-head {
       display: flex; align-items: center; justify-content: space-between; padding: 10px 16px;
@@ -129,6 +149,22 @@
     table.result th { text-align: left; color: var(--text-dim); font-family: 'Fira Code', monospace; font-weight: 600; padding: 6px 10px; border-bottom: 1px solid var(--border); }
     table.result td { padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text); }
     table.result tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .dict-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+    .op-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 10px; max-width: 760px; margin: 4px 0 20px; }
+    .op-chip {
+      background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+    }
+    .op-chip .op-sym { font-family: 'Fira Code', monospace; color: var(--amber); font-size: 13px; font-weight: 600; }
+    .op-chip .op-desc { font-size: 12px; color: var(--text-dim); margin-top: 3px; line-height: 1.5; }
+
+    .compare-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 800px; margin-bottom: 18px; }
+    @media (max-width: 760px) { .compare-wrap { grid-template-columns: 1fr; } }
+    .compare-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+    .compare-card h4 { font-family: 'Fira Code', monospace; font-size: 13px; margin-bottom: 8px; }
+    .compare-card.rollback h4 { color: var(--pink); }
+    .compare-card.commit h4 { color: var(--green); }
+    .compare-card p { font-size: 13px; color: var(--text-dim); line-height: 1.65; }
 
     .quiz-box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 24px; max-width: 760px; }
     .quiz-progress { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--text-dim); margin-bottom: 16px; }
@@ -185,23 +221,24 @@
     <div class="nav-group-label">DML &amp; Query</div>
     <a class="nav-link" data-target="sec-12"><span class="tag">12</span> INSERT</a>
     <a class="nav-link" data-target="sec-13"><span class="tag">13</span> SELECT</a>
-    <a class="nav-link" data-target="sec-14"><span class="tag">14</span> WHERE</a>
-    <a class="nav-link" data-target="sec-15"><span class="tag">15</span> LIKE &amp; REGEXP</a>
-    <a class="nav-link" data-target="sec-16"><span class="tag">16</span> String Function</a>
-    <a class="nav-link" data-target="sec-17"><span class="tag">17</span> Date Function</a>
+    <a class="nav-link" data-target="sec-14"><span class="tag">14</span> WHERE · Operator</a>
+    <a class="nav-link" data-target="sec-15"><span class="tag">15</span> Kondisi Majemuk</a>
+    <a class="nav-link" data-target="sec-16"><span class="tag">16</span> Kamus String Function</a>
+    <a class="nav-link" data-target="sec-17"><span class="tag">17</span> Kamus Date Function</a>
     <a class="nav-link" data-target="sec-18"><span class="tag">18</span> ORDER BY</a>
     <a class="nav-link" data-target="sec-19"><span class="tag">19</span> Aggregate Function</a>
     <a class="nav-link" data-target="sec-20"><span class="tag">20</span> GROUP BY</a>
     <a class="nav-link" data-target="sec-21"><span class="tag">21</span> HAVING</a>
-    <a class="nav-link" data-target="sec-22"><span class="tag">22</span> JOIN</a>
-    <a class="nav-link" data-target="sec-23"><span class="tag">23</span> UPDATE</a>
-    <a class="nav-link" data-target="sec-24"><span class="tag">24</span> DELETE</a>
-    <a class="nav-link" data-target="sec-25"><span class="tag">25</span> TRANSACTION</a>
+    <a class="nav-link" data-target="sec-22"><span class="tag">22</span> Simple Join</a>
+    <a class="nav-link" data-target="sec-23"><span class="tag">23</span> INNER JOIN</a>
+    <a class="nav-link" data-target="sec-24"><span class="tag">24</span> UPDATE</a>
+    <a class="nav-link" data-target="sec-25"><span class="tag">25</span> DELETE</a>
+    <a class="nav-link" data-target="sec-26"><span class="tag">26</span> TRANSACTION</a>
   </div>
 
   <div class="nav-group">
     <div class="nav-group-label">Latihan</div>
-    <a class="nav-link" data-target="sec-26"><span class="tag">26</span> Kuis Interaktif</a>
+    <a class="nav-link" data-target="sec-27"><span class="tag">27</span> Kuis Interaktif</a>
   </div>
 
   <div class="sidebar-footer">▶ Jalankan query untuk melihat hasil simulasi.</div>
@@ -211,7 +248,7 @@
 
   <section class="hero">
     <h1 class="hero-title">Belajar syntax <span class="accent">SQL</span> </h1>
-    <p class="hero-desc">Urutan lengkap dari CREATE DATABASE sampai TRANSACTION · semua contoh bisa dijalankan.</p>
+    <p class="hero-desc">Urutan lengkap dari CREATE DATABASE sampai TRANSACTION, plus kamus fungsi string &amp; tanggal · semua contoh bisa dijalankan.</p>
     <div class="console-hero">
       <div class="console-topbar">
         <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
@@ -345,12 +382,42 @@
   <!-- 09 ALTER TABLE -->
   <section class="section" id="sec-09">
     <div class="section-head"><span class="section-num">09</span><span class="section-title">ALTER TABLE</span></div>
-    <p class="section-desc">Mengubah struktur tabel: tambah kolom, ubah tipe, tambah constraint.</p>
-    <div class="query-card" data-result="q09">
-      <div class="query-card-head"><span>DDL</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">ALTER TABLE mahasiswa
+    <p class="section-desc">Mengubah struktur tabel yang sudah ada: menambah kolom, menambah constraint dengan nama alias, dan lainnya.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">＋</span>Tambah kolom baru</div>
+      <p class="topic-text">Kolom baru ditambahkan dengan <code>ADD COLUMN</code>. Nilai lama akan terisi <code>NULL</code> untuk kolom ini secara default.</p>
+      <div class="query-card" data-result="q09a">
+        <div class="query-card-head"><span>DDL</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">ALTER TABLE mahasiswa
 ADD COLUMN alamat TEXT;</pre>
-      <div class="result-wrap"></div>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">✓</span>Tambah kolom ENUM</div>
+      <p class="topic-text">Tipe <code>ENUM</code> membatasi nilai kolom hanya pada daftar pilihan yang ditentukan, contohnya jenis kelamin.</p>
+      <div class="query-card" data-result="q09b">
+        <div class="query-card-head"><span>DDL</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">ALTER TABLE mahasiswa
+ADD COLUMN jenis_kelamin ENUM('Male','Female');</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">🔒</span>Tambah constraint dengan alias</div>
+      <p class="topic-text">Constraint tambahan bisa diberi nama sendiri (alias) memakai backtick, supaya lebih mudah dikenali atau dihapus di kemudian hari. Berikut memastikan format NPM dan batas usia minimum.</p>
+      <div class="query-card" data-result="q09c">
+        <div class="query-card-head"><span>DDL</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">ALTER TABLE mahasiswa
+ADD CONSTRAINT CHECK (npm REGEXP '^M[0-9]{3}$');
+
+ALTER TABLE mahasiswa
+ADD CONSTRAINT `Minimum usia` CHECK (usia >= 17);</pre>
+        <div class="result-wrap"></div>
+      </div>
     </div>
   </section>
 
@@ -391,67 +458,271 @@ VALUES ('M001', 'Budi', 'Informatika', 20, 'budi@mail.com');</pre>
   <!-- 13 SELECT -->
   <section class="section" id="sec-13">
     <div class="section-head"><span class="section-num">13</span><span class="section-title">SELECT</span></div>
-    <p class="section-desc">Mengambil data dari tabel.</p>
-    <div class="query-card" data-result="q13">
-      <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">SELECT * FROM mahasiswa;</pre>
-      <div class="result-wrap"></div>
+    <p class="section-desc">Mengambil data dari tabel. Hierarki dasar sebuah query SELECT selalu berjalan dari <code>FROM</code> lalu baru disaring dengan <code>WHERE</code>.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▤</span>Satu kolom</div>
+      <div class="term-syntax">SELECT nama_kolom FROM table_name;</div>
+      <div class="query-card" data-result="q13a">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▦</span>Banyak kolom</div>
+      <div class="term-syntax">SELECT kolom1, kolom2 FROM table_name;</div>
+      <div class="query-card" data-result="q13b">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama, jurusan FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">✱</span>Semua kolom</div>
+      <div class="term-syntax">SELECT * FROM table_name;</div>
+      <div class="query-card" data-result="q13">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 14 WHERE -->
+  <!-- 14 WHERE OPERATOR -->
   <section class="section" id="sec-14">
-    <div class="section-head"><span class="section-num">14</span><span class="section-title">WHERE</span></div>
-    <p class="section-desc">Menyaring baris berdasarkan kondisi.</p>
-    <div class="query-card" data-result="q14">
-      <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">SELECT * FROM mahasiswa
-WHERE usia >= 20;</pre>
-      <div class="result-wrap"></div>
-    </div>
-  </section>
+    <div class="section-head"><span class="section-num">14</span><span class="section-title">WHERE · Operator Dasar</span></div>
+    <p class="section-desc">Menyaring baris berdasarkan syarat tertentu. Ada dua cara umum untuk membandingkan nilai: tanda <code>=</code> untuk kecocokan persis, dan <code>LIKE</code> untuk pencocokan pola (mendukung wildcard).</p>
 
-  <!-- 15 LIKE & REGEXP -->
-  <section class="section" id="sec-15">
-    <div class="section-head"><span class="section-num">15</span><span class="section-title">LIKE &amp; REGEXP</span></div>
-    <p class="section-desc">Pencocokan pola teks. LIKE pakai % dan _, REGEXP pakai regex.</p>
-    <div class="query-card" data-result="q15">
-      <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">SELECT * FROM mahasiswa
+    <div class="topic">
+      <div class="term-row"><span class="term-badge op">=</span><span class="term-def">Kecocokan nilai yang persis sama.</span></div>
+      <div class="term-syntax">SELECT kolom FROM table WHERE kolom = kondisi;</div>
+      <div class="query-card" data-result="q14eq">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama, jurusan, email
+FROM mahasiswa
+WHERE jurusan = 'Informatika';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge op">LIKE</span><span class="term-def">Pencocokan pola teks, bisa dipakai persis seperti <code>=</code> atau dengan wildcard.</span></div>
+      <div class="term-syntax">SELECT kolom FROM table WHERE kolom LIKE kondisi;</div>
+      <div class="query-card" data-result="q14like">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama, jurusan, email
+FROM mahasiswa
+WHERE jurusan LIKE 'Informatika';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">⌗</span>Wildcard pada LIKE</div>
+      <p class="topic-text">Simbol <code>%</code> mengabaikan sejumlah karakter apa pun di posisinya, sedangkan <code>REGEXP</code> memakai simbol regex seperti <code>^</code> (awal string) dan <code>$</code> (akhir string) untuk pola yang lebih presisi.</p>
+      <div class="op-grid">
+        <div class="op-chip"><div class="op-sym">a%</div><div class="op-desc">Diawali huruf "a", sisanya bebas</div></div>
+        <div class="op-chip"><div class="op-sym">%a</div><div class="op-desc">Diakhiri huruf "a"</div></div>
+        <div class="op-chip"><div class="op-sym">%a%</div><div class="op-desc">Mengandung huruf "a" di mana saja</div></div>
+        <div class="op-chip"><div class="op-sym">^A[0-9]{3}$</div><div class="op-desc">REGEXP: huruf A diikuti 3 digit angka</div></div>
+      </div>
+      <div class="query-card" data-result="q14wild">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama FROM mahasiswa
 WHERE nama LIKE 'B%';</pre>
-      <div class="result-wrap"></div>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge op">&gt; &lt; &gt;= &lt;= !=</span><span class="term-def">Operator perbandingan untuk data angka.</span></div>
+      <div class="query-card" data-result="q14cmp">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama, usia
+FROM mahasiswa
+WHERE usia > 18;</pre>
+        <div class="result-wrap"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 16 String Function -->
+  <!-- 15 KONDISI MAJEMUK -->
+  <section class="section" id="sec-15">
+    <div class="section-head"><span class="section-num">15</span><span class="section-title">Kondisi Majemuk</span></div>
+    <p class="section-desc">Menggabungkan lebih dari satu syarat dalam satu <code>WHERE</code> menggunakan <code>AND</code>, <code>OR</code>, atau mempersingkat banyak <code>OR</code> dengan <code>IN</code>.</p>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge op">AND</span><span class="term-def">Kedua kondisi harus sama-sama terpenuhi.</span></div>
+      <div class="query-card" data-result="q15and">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mahasiswa
+WHERE jurusan = 'Informatika' AND usia > 18;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge op">OR</span><span class="term-def">Cukup salah satu kondisi yang terpenuhi.</span></div>
+      <div class="query-card" data-result="q15or">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mahasiswa
+WHERE jurusan = 'Informatika' OR jurusan = 'Sistem Informasi';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge op">IN</span><span class="term-def">Menyaring berdasarkan sekelompok nilai sekaligus — ringkasan dari banyak <code>OR</code>.</span></div>
+      <div class="query-card" data-result="q15in">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mahasiswa
+WHERE jurusan IN ('Informatika', 'Sistem Informasi', 'Teknik Komputer');</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 KAMUS STRING FUNCTION -->
   <section class="section" id="sec-16">
-    <div class="section-head"><span class="section-num">16</span><span class="section-title">String Function</span></div>
-    <p class="section-desc">Fungsi untuk mengolah teks: CONCAT, LEFT, UPPER, LENGTH, dll.</p>
-    <div class="query-card" data-result="q16">
-      <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">SELECT UPPER(nama) AS nama_besar,
-       LENGTH(nama) AS panjang
+    <div class="section-head"><span class="section-num">16</span><span class="section-title">Kamus String Function</span></div>
+    <p class="section-desc">Kumpulan fungsi bawaan SQL untuk mengolah data teks. Nama kolom hasil bisa diganti tampilannya memakai <code>AS</code>.</p>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">LEFT(kolom, n)</span><span class="term-def">Mengambil n karakter dari sisi kiri sebuah teks.</span></div>
+      <div class="query-card" data-result="q16left">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT LEFT(nama, 3) AS nama_singkat
 FROM mahasiswa;</pre>
-      <div class="result-wrap"></div>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">RIGHT(kolom, n)</span><span class="term-def">Mengambil n karakter dari sisi kanan sebuah teks.</span></div>
+      <div class="query-card" data-result="q16right">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT RIGHT(email, 8) AS domain
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">UPPER / LOWER(kolom)</span><span class="term-def">Mengubah teks menjadi huruf kapital semua, atau huruf kecil semua.</span></div>
+      <div class="query-card" data-result="q16case">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama,
+       LOWER(nama) AS nama_kecil,
+       UPPER(nama) AS nama_besar
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">CONCAT(...)</span><span class="term-def">Menggabungkan beberapa nilai kolom dan/atau teks statis menjadi satu string. Teks tambahan bisa diletakkan sebelum, sesudah, atau di kedua sisi data.</span></div>
+      <div class="query-card" data-result="q16concat">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT CONCAT('Halo, ', nama, '! Selamat datang.') AS pesan
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">LENGTH(kolom)</span><span class="term-def">Menghitung jumlah karakter dalam sebuah teks.</span></div>
+      <div class="query-card" data-result="q16length">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama, LENGTH(nama) AS panjang_nama
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">REPLACE(kolom, cari, ganti)</span><span class="term-def">Mengganti setiap kemunculan sebuah kata dalam teks dengan kata lain.</span></div>
+      <div class="query-card" data-result="q16replace">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT REPLACE(jurusan, 'Informatika', 'Ilmu Komputer') AS jurusan_baru
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">SUBSTR(kolom, start, n)</span><span class="term-def">Mengambil potongan teks mulai dari indeks tertentu sepanjang n karakter.</span></div>
+      <div class="query-card" data-result="q16substr">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT SUBSTR(nama, 2, 3) AS potongan
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 17 Date Function -->
+  <!-- 17 KAMUS DATE FUNCTION -->
   <section class="section" id="sec-17">
-    <div class="section-head"><span class="section-num">17</span><span class="section-title">Date Function</span></div>
-    <p class="section-desc">Fungsi untuk tanggal: CURDATE, DATEDIFF, YEAR, MONTH, dll.</p>
-    <div class="query-card" data-result="q17">
-      <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">SELECT CURDATE() AS hari_ini,
-       YEAR(CURDATE()) AS tahun;</pre>
-      <div class="result-wrap"></div>
+    <div class="section-head"><span class="section-num">17</span><span class="section-title">Kamus Date Function</span></div>
+    <p class="section-desc">Fungsi bawaan untuk membaca dan menghitung selisih tanggal / waktu.</p>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge dt">CURDATE()</span><span class="term-def">Menampilkan tanggal hari ini (tanpa jam).</span></div>
+      <div class="query-card" data-result="q17curdate">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT CURDATE() AS hari_ini;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge dt">NOW()</span><span class="term-def">Menampilkan tanggal sekaligus jam saat ini (real time), berbeda dengan CURDATE yang hanya tanggal.</span></div>
+      <div class="query-card" data-result="q17now">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT NOW() AS waktu_sekarang;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge dt">DATEDIFF(a, b)</span><span class="term-def">Menghitung selisih dua tanggal dalam satuan hari, hasilnya a − b.</span></div>
+      <div class="query-card" data-result="q17datediff">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT DATEDIFF(CURDATE(), tanggal_lahir) AS selisih_hari
+FROM contoh_tipe;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge dt">TIMESTAMPDIFF(unit, a, b)</span><span class="term-def">Sama seperti DATEDIFF tapi bisa memilih satuan (DAY, MONTH, YEAR) dan hasilnya b − a.</span></div>
+      <div class="query-card" data-result="q17tsdiff">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT TIMESTAMPDIFF(MONTH, tanggal_lahir, CURDATE()) AS umur_dalam_bulan
+FROM contoh_tipe;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge dt">DAY / MONTH / YEAR(kolom)</span><span class="term-def">Mengambil bagian hari, bulan, atau tahun saja dari sebuah tanggal.</span></div>
+      <div class="query-card" data-result="q17dmy">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT DAY(tanggal_lahir) AS tgl,
+       MONTH(tanggal_lahir) AS bln,
+       YEAR(tanggal_lahir) AS thn
+FROM contoh_tipe;</pre>
+        <div class="result-wrap"></div>
+      </div>
     </div>
   </section>
 
   <!-- 18 ORDER BY -->
   <section class="section" id="sec-18">
     <div class="section-head"><span class="section-num">18</span><span class="section-title">ORDER BY</span></div>
-    <p class="section-desc">Mengurutkan hasil query.</p>
+    <p class="section-desc">Mengurutkan hasil query. <code>ASC</code> untuk menaik (default), <code>DESC</code> untuk menurun.</p>
     <div class="query-card" data-result="q18">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
       <pre class="sql">SELECT * FROM mahasiswa
@@ -463,7 +734,7 @@ ORDER BY usia DESC;</pre>
   <!-- 19 Aggregate Function -->
   <section class="section" id="sec-19">
     <div class="section-head"><span class="section-num">19</span><span class="section-title">Aggregate Function</span></div>
-    <p class="section-desc">COUNT, SUM, AVG, MAX, MIN.</p>
+    <p class="section-desc">COUNT, SUM, AVG, MAX, MIN — meringkas banyak baris menjadi satu nilai.</p>
     <div class="query-card" data-result="q19">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
       <pre class="sql">SELECT COUNT(*) AS total,
@@ -489,7 +760,7 @@ GROUP BY jurusan;</pre>
   <!-- 21 HAVING -->
   <section class="section" id="sec-21">
     <div class="section-head"><span class="section-num">21</span><span class="section-title">HAVING</span></div>
-    <p class="section-desc">Menyaring hasil GROUP BY.</p>
+    <p class="section-desc">Menyaring hasil GROUP BY — mirip WHERE, tapi bekerja setelah data dikelompokkan/diagregasi.</p>
     <div class="query-card" data-result="q21">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
       <pre class="sql">SELECT jurusan, COUNT(*) AS jumlah
@@ -500,11 +771,44 @@ HAVING COUNT(*) > 0;</pre>
     </div>
   </section>
 
-  <!-- 22 JOIN -->
+  <!-- 22 SIMPLE JOIN -->
   <section class="section" id="sec-22">
-    <div class="section-head"><span class="section-num">22</span><span class="section-title">JOIN</span></div>
-    <p class="section-desc">Menggabungkan tabel berdasarkan relasi.</p>
-    <div class="query-card" data-result="q22">
+    <div class="section-head"><span class="section-num">22</span><span class="section-title">Simple Join</span></div>
+    <p class="section-desc">Cara lama menghubungkan dua tabel tanpa kata kunci <code>JOIN</code>: cukup sebutkan kedua tabel di <code>FROM</code> dipisah koma, lalu hubungkan atributnya di <code>WHERE</code>. Tidak harus foreign key ke primary key — dua kolom apa pun yang nilainya sama bisa dipakai.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">⚠</span>Tanpa WHERE → cartesian product</div>
+      <p class="topic-text">Jika dua tabel hanya digabung dengan koma tanpa <code>WHERE</code>, setiap baris tabel pertama dipasangkan dengan <b>semua</b> baris tabel kedua (permutasi penuh) — biasanya bukan yang diinginkan.</p>
+      <div class="callout warn">
+        <div class="icon">⚠</div>
+        <div class="callout-text"><b>Hati-hati:</b> jumlah baris hasilnya = jumlah baris tabel A × jumlah baris tabel B.</div>
+      </div>
+      <div class="query-card" data-result="q22cart">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT *
+FROM missions, astronauts;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">🔗</span>Dengan WHERE → menyamakan relasi</div>
+      <p class="topic-text">Menambahkan <code>WHERE</code> untuk menyamakan kolom penghubung membuat hasilnya sinkron, setara dengan INNER JOIN.</p>
+      <div class="query-card" data-result="q22where">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT missionId, missions.astronautId, astronautName
+FROM missions, astronauts
+WHERE missions.astronautId = astronauts.astronautId;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 23 JOIN -->
+  <section class="section" id="sec-23">
+    <div class="section-head"><span class="section-num">23</span><span class="section-title">INNER JOIN</span></div>
+    <p class="section-desc">Sintaks modern untuk menggabungkan tabel berdasarkan relasi — lebih jelas dibaca dibanding Simple Join.</p>
+    <div class="query-card" data-result="q23">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
       <pre class="sql">SELECT mahasiswa.nama, nilai.mata_kuliah
 FROM mahasiswa
@@ -513,61 +817,99 @@ INNER JOIN nilai ON mahasiswa.npm = nilai.npm;</pre>
     </div>
   </section>
 
-  <!-- 23 UPDATE -->
-  <section class="section" id="sec-23">
-    <div class="section-head"><span class="section-num">23</span><span class="section-title">UPDATE</span></div>
-    <p class="section-desc">Mengubah nilai pada baris yang sudah ada.</p>
-    <div class="query-card" data-result="q23">
+  <!-- 24 UPDATE -->
+  <section class="section" id="sec-24">
+    <div class="section-head"><span class="section-num">24</span><span class="section-title">UPDATE</span></div>
+    <p class="section-desc">Mengubah nilai pada baris yang sudah ada. Bisa mengubah satu kolom atau beberapa kolom sekaligus, dipisah koma.</p>
+    <div class="query-card" data-result="q24a">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
       <pre class="sql">UPDATE mahasiswa
 SET usia = 21
 WHERE npm = 'M001';</pre>
       <div class="result-wrap"></div>
     </div>
-  </section>
-
-  <!-- 24 DELETE -->
-  <section class="section" id="sec-24">
-    <div class="section-head"><span class="section-num">24</span><span class="section-title">DELETE</span></div>
-    <p class="section-desc">Menghapus baris berdasarkan kondisi.</p>
-    <div class="query-card" data-result="q24">
+    <div class="query-card" data-result="q24b">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">DELETE FROM mahasiswa
+      <pre class="sql">UPDATE mahasiswa
+SET nama = 'Budi Santoso', usia = 22
 WHERE npm = 'M001';</pre>
       <div class="result-wrap"></div>
     </div>
   </section>
 
-  <!-- 25 TRANSACTION -->
+  <!-- 25 DELETE -->
   <section class="section" id="sec-25">
-    <div class="section-head"><span class="section-num">25</span><span class="section-title">TRANSACTION</span></div>
-    <p class="section-desc">Membungkus beberapa query dalam satu unit kerja.</p>
+    <div class="section-head"><span class="section-num">25</span><span class="section-title">DELETE</span></div>
+    <p class="section-desc">Menghapus baris berdasarkan kondisi — tanpa <code>SELECT</code> apa pun, langsung dari nama tabelnya.</p>
     <div class="query-card" data-result="q25">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
-      <pre class="sql">START TRANSACTION;
-UPDATE mahasiswa SET usia = 22 WHERE npm = 'M002';
-ROLLBACK;</pre>
+      <pre class="sql">DELETE FROM mahasiswa
+WHERE npm = 'M001';</pre>
       <div class="result-wrap"></div>
+    </div>
+    <div class="callout warn">
+      <div class="icon">⚠</div>
+      <div class="callout-text"><b>Ingat:</b> selalu sertakan WHERE, kalau tidak seluruh baris di tabel akan terhapus.</div>
     </div>
   </section>
 
-  <!-- 26 QUIZ -->
+  <!-- 26 TRANSACTION -->
   <section class="section" id="sec-26">
-    <div class="section-head"><span class="section-num">26</span><span class="section-title">Kuis Interaktif</span></div>
-    <p class="section-desc">Uji pemahaman tentang seluruh materi.</p>
+    <div class="section-head"><span class="section-num">26</span><span class="section-title">TRANSACTION</span></div>
+    <p class="section-desc">Membungkus beberapa query menjadi satu sesi kerja (unit kerja) yang bisa dibatalkan seluruhnya jika salah satu langkah gagal, atau disimpan permanen jika semua sukses.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">🧾</span>Contoh alur transaksi</div>
+      <div class="query-card" data-result="q26">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">START TRANSACTION;
+
+UPDATE missions
+SET missionStatus = 'Completed'
+WHERE missionId = 'MI0002';
+
+UPDATE missionlogs
+SET logMessage = 'Something error on this event'
+WHERE missionId = 'MI0002';
+
+ROLLBACK;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">⚖</span>ROLLBACK vs COMMIT</div>
+      <p class="topic-text">Selama transaksi belum diakhiri, semua perubahan sifatnya sementara (temporary) dan hanya terlihat dalam sesi itu.</p>
+      <div class="compare-wrap">
+        <div class="compare-card rollback">
+          <h4>ROLLBACK</h4>
+          <p>Membatalkan seluruh perubahan yang dilakukan sejak <code style="color:var(--amber)">START TRANSACTION</code>, mengembalikan data seperti semula. Dipakai saat salah satu langkah gagal atau tidak sesuai harapan.</p>
+        </div>
+        <div class="compare-card commit">
+          <h4>COMMIT</h4>
+          <p>Menyimpan seluruh perubahan secara permanen ke database. Setelah COMMIT, perubahan tidak bisa lagi dibatalkan dengan ROLLBACK.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 27 QUIZ -->
+  <section class="section" id="sec-27">
+    <div class="section-head"><span class="section-num">27</span><span class="section-title">Kuis Interaktif</span></div>
+    <p class="section-desc">Uji pemahaman tentang seluruh materi, dari DDL, operator WHERE, fungsi string/tanggal, join, sampai transaction.</p>
     <div class="quiz-box">
-      <div class="quiz-progress" id="quizProgress">Soal 1 / 6</div>
+      <div class="quiz-progress" id="quizProgress">Soal 1 / 10</div>
       <div class="quiz-q" id="quizQ"></div>
       <div class="quiz-opts" id="quizOpts"></div>
       <div class="quiz-feedback" id="quizFeedback"></div>
       <div class="quiz-nav">
-        <span class="quiz-score" id="quizScore">Skor: 0 / 6</span>
+        <span class="quiz-score" id="quizScore">Skor: 0 / 10</span>
         <button class="quiz-btn primary" id="quizNext" disabled>Soal berikutnya →</button>
       </div>
     </div>
   </section>
 
-  <footer>sql_belajar.db — lengkap dari 01 sampai 26</footer>
+  <footer>sql_belajar.db — lengkap dari 01 sampai 27</footer>
 </main>
 
 <script>
@@ -600,8 +942,8 @@ function typeHero(){
 typeHero();
 
 // highlight sql
-const KEYWORDS = ['CREATE','DATABASE','USE','TABLE','INT','VARCHAR','DATE','DECIMAL','BOOLEAN','PRIMARY','KEY','FOREIGN','REFERENCES','ON','DELETE','CASCADE','SET','NULL','RESTRICT','UPDATE','CASCADE','ALTER','ADD','COLUMN','DROP','IF','EXISTS','TRUNCATE','INSERT','INTO','SELECT','FROM','WHERE','LIKE','REGEXP','GROUP','BY','HAVING','INNER','JOIN','START','TRANSACTION','ROLLBACK','COMMIT','ORDER','ASC','DESC','COUNT','SUM','AVG','MAX','MIN','AND','OR','NOT','DEFAULT','UNIQUE','CHECK'];
-const FUNCS = ['UPPER','LOWER','LENGTH','CURDATE','YEAR','MONTH','DATEDIFF','CONCAT','LEFT','RIGHT'];
+const KEYWORDS = ['CREATE','DATABASE','USE','TABLE','INT','VARCHAR','CHAR','TEXT','DATE','DECIMAL','BOOLEAN','ENUM','PRIMARY','KEY','FOREIGN','REFERENCES','ON','DELETE','CASCADE','SET','NULL','RESTRICT','UPDATE','ALTER','ADD','COLUMN','CONSTRAINT','DROP','IF','EXISTS','TRUNCATE','INSERT','INTO','VALUES','SELECT','FROM','WHERE','LIKE','REGEXP','IN','GROUP','BY','HAVING','INNER','JOIN','START','TRANSACTION','ROLLBACK','COMMIT','ORDER','ASC','DESC','COUNT','SUM','AVG','MAX','MIN','AND','OR','NOT','DEFAULT','UNIQUE','CHECK','AS'];
+const FUNCS = ['UPPER','LOWER','LENGTH','CURDATE','NOW','YEAR','MONTH','DAY','DATEDIFF','TIMESTAMPDIFF','CONCAT','LEFT','RIGHT','REPLACE','SUBSTR'];
 
 function highlight(code){
   let escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -629,23 +971,45 @@ const RESULTS = {
   q06: {cols:['status'], rows:[['Tabel "nilai" dengan REFERENCES berhasil dibuat']]},
   q07: {cols:['status'], rows:[['Tabel "nilai_ondelete" dengan ON DELETE CASCADE berhasil dibuat']]},
   q08: {cols:['status'], rows:[['Tabel "nilai_onupdate" dengan ON UPDATE CASCADE berhasil dibuat']]},
-  q09: {cols:['status'], rows:[['Kolom "alamat" ditambahkan ke tabel mahasiswa']]},
+  q09a: {cols:['status'], rows:[['Kolom "alamat" ditambahkan ke tabel mahasiswa']]},
+  q09b: {cols:['status'], rows:[['Kolom "jenis_kelamin" (ENUM) ditambahkan ke tabel mahasiswa']]},
+  q09c: {cols:['status'], rows:[['2 constraint baru ditambahkan: format npm, dan "Minimum usia"']]},
   q10: {cols:['status'], rows:[['Tabel "nilai_ondelete" dihapus (jika ada)']]},
   q11: {cols:['status'], rows:[['Data di tabel "mahasiswa" dikosongkan']]},
   q12: {cols:['status'], rows:[['1 baris ditambahkan ke mahasiswa']]},
-  q13: {cols:['npm','nama','jurusan','usia','email','alamat'], rows:[['M001','Budi','Informatika','20','budi@mail.com',null]]},
-  q14: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com']]},
-  q15: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com']]},
-  q16: {cols:['nama_besar','panjang'], rows:[['BUDI','4']]},
-  q17: {cols:['hari_ini','tahun'], rows:[['2026-07-16','2026']]},
-  q18: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com']]},
-  q19: {cols:['total','rata_usia'], rows:[['1','20.0000']]},
-  q20: {cols:['jurusan','jumlah'], rows:[['Informatika','1']]},
-  q21: {cols:['jurusan','jumlah'], rows:[['Informatika','1']]},
-  q22: {cols:['nama','mata_kuliah'], rows:[['Budi','Algoritma']]},
-  q23: {cols:['status'], rows:[['1 baris diperbarui (usia = 21)']]},
-  q24: {cols:['status'], rows:[['1 baris dihapus dari mahasiswa']]},
-  q25: {cols:['status'], rows:[['Transaksi dimulai, UPDATE dijalankan, lalu ROLLBACK (perubahan dibatalkan)']]},
+  q13: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
+  q13a: {cols:['nama'], rows:[['Budi'],['Siti'],['Andi']]},
+  q13b: {cols:['nama','jurusan'], rows:[['Budi','Informatika'],['Siti','Sistem Informasi'],['Andi','Informatika']]},
+  q14eq: {cols:['nama','jurusan','email'], rows:[['Budi','Informatika','budi@mail.com'],['Andi','Informatika','andi@mail.com']]},
+  q14like: {cols:['nama','jurusan','email'], rows:[['Budi','Informatika','budi@mail.com'],['Andi','Informatika','andi@mail.com']]},
+  q14wild: {cols:['nama'], rows:[['Budi']]},
+  q14cmp: {cols:['nama','usia'], rows:[['Budi','20'],['Siti','19'],['Andi','22']]},
+  q15and: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
+  q15or: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
+  q15in: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
+  q16left: {cols:['nama_singkat'], rows:[['Bud'],['Sit'],['And']]},
+  q16right: {cols:['domain'], rows:[['mail.com'],['mail.com'],['mail.com']]},
+  q16case: {cols:['nama','nama_kecil','nama_besar'], rows:[['Budi','budi','BUDI'],['Siti','siti','SITI'],['Andi','andi','ANDI']]},
+  q16concat: {cols:['pesan'], rows:[['Halo, Budi! Selamat datang.'],['Halo, Siti! Selamat datang.'],['Halo, Andi! Selamat datang.']]},
+  q16length: {cols:['nama','panjang_nama'], rows:[['Budi','4'],['Siti','4'],['Andi','4']]},
+  q16replace: {cols:['jurusan_baru'], rows:[['Ilmu Komputer'],['Sistem Informasi'],['Ilmu Komputer']]},
+  q16substr: {cols:['potongan'], rows:[['udi'],['iti'],['ndi']]},
+  q17curdate: {cols:['hari_ini'], rows:[['2026-07-16']]},
+  q17now: {cols:['waktu_sekarang'], rows:[['2026-07-16 09:41:07']]},
+  q17datediff: {cols:['selisih_hari'], rows:[['7320']]},
+  q17tsdiff: {cols:['umur_dalam_bulan'], rows:[['240']]},
+  q17dmy: {cols:['tgl','bln','thn'], rows:[['14','5','2006']]},
+  q18: {cols:['npm','nama','jurusan','usia','email'], rows:[['M003','Andi','Informatika','22','andi@mail.com'],['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com']]},
+  q19: {cols:['total','rata_usia'], rows:[['3','20.3333']]},
+  q20: {cols:['jurusan','jumlah'], rows:[['Informatika','2'],['Sistem Informasi','1']]},
+  q21: {cols:['jurusan','jumlah'], rows:[['Informatika','2'],['Sistem Informasi','1']]},
+  q22cart: {cols:['missionId','astronautId','astronautName'], rows:[['MI001','AS001','Maya Chen'],['MI001','AS002','Wira Putra'],['MI002','AS001','Maya Chen'],['MI002','AS002','Wira Putra']]},
+  q22where: {cols:['missionId','astronautId','astronautName'], rows:[['MI001','AS001','Maya Chen'],['MI002','AS002','Wira Putra']]},
+  q23: {cols:['nama','mata_kuliah'], rows:[['Budi','Algoritma'],['Andi','Basis Data']]},
+  q24a: {cols:['status'], rows:[['1 baris diperbarui (usia = 21)']]},
+  q24b: {cols:['status'], rows:[['1 baris diperbarui (nama & usia)']]},
+  q25: {cols:['status'], rows:[['1 baris dihapus dari mahasiswa']]},
+  q26: {cols:['status'], rows:[['Transaksi dimulai → 2 UPDATE dijalankan → ROLLBACK (kedua perubahan dibatalkan)']]},
 };
 
 document.querySelectorAll('.query-card').forEach(card=>{
@@ -656,6 +1020,7 @@ document.querySelectorAll('.query-card').forEach(card=>{
     const isOpen = wrap.classList.contains('open');
     if(isOpen){ wrap.classList.remove('open'); btn.textContent='▶ Jalankan'; return; }
     const data = RESULTS[key];
+    if(!data) return;
     if(!wrap.dataset.built){
       let html = `<div class="result-meta">✓ ${data.rows.length} baris dikembalikan</div>`;
       html += '<table class="result"><thead><tr>' + data.cols.map(c=>`<th>${c}</th>`).join('') + '</tr></thead><tbody>';
@@ -673,16 +1038,24 @@ document.querySelectorAll('.query-card').forEach(card=>{
 const QUIZ = [
   {q:"Perintah untuk membuat database baru adalah...",
    opts:["CREATE DATABASE","NEW DATABASE","MAKE DATABASE","ADD DATABASE"], correct:0, fb:"CREATE DATABASE adalah perintah yang benar."},
-  {q:"Constraint yang menjamin nilai di kolom unik adalah...",
-   opts:["UNIQUE","NOT NULL","CHECK","DEFAULT"], correct:0, fb:"UNIQUE memastikan tidak ada duplikat."},
+  {q:"Simbol wildcard <code>%</code> pada LIKE berfungsi untuk...",
+   opts:["Mencocokkan tepat satu karakter","Mengabaikan sejumlah karakter apa pun di posisinya","Membalik urutan teks","Menghitung panjang teks"], correct:1, fb:"% pada LIKE mengabaikan/menerima karakter apa pun di posisi tersebut."},
+  {q:"Untuk menyaring data dengan beberapa pilihan nilai sekaligus tanpa menulis banyak OR, kita pakai...",
+   opts:["IN","AND","LIKE","BETWEEN saja"], correct:0, fb:"IN meringkas banyak kondisi OR pada kolom yang sama."},
+  {q:"Fungsi string untuk menggabungkan beberapa nilai kolom dan teks menjadi satu string adalah...",
+   opts:["SUBSTR","REPLACE","CONCAT","LENGTH"], correct:2, fb:"CONCAT menggabungkan nilai-nilai menjadi satu string."},
+  {q:"Perbedaan utama antara CURDATE() dan NOW() adalah...",
+   opts:["Tidak ada perbedaan","NOW() menyertakan jam, CURDATE() hanya tanggal","CURDATE() lebih akurat","NOW() hanya untuk MySQL versi lama"], correct:1, fb:"NOW() mengembalikan tanggal + jam real time, CURDATE() hanya tanggal."},
   {q:"Apa fungsi ON DELETE CASCADE?",
    opts:["Menghapus tabel induk","Menghapus baris anak saat induk dihapus","Mengubah data anak","Menambah data anak"], correct:1, fb:"CASCADE akan menghapus baris di tabel anak saat induk dihapus."},
+  {q:"Menggabungkan dua tabel dengan koma di FROM tanpa WHERE akan menghasilkan...",
+   opts:["Error","Cartesian product (semua kombinasi baris)","Hanya baris yang relasinya cocok","Tabel kosong"], correct:1, fb:"Tanpa WHERE, setiap baris tabel A dipasangkan dengan semua baris tabel B."},
   {q:"Perintah untuk menghapus semua data tapi mempertahankan struktur tabel adalah...",
    opts:["DROP TABLE","DELETE","TRUNCATE","REMOVE"], correct:2, fb:"TRUNCATE menghapus data, struktur tetap."},
-  {q:"Fungsi agregat untuk menghitung jumlah baris adalah...",
-   opts:["SUM","COUNT","AVG","MAX"], correct:1, fb:"COUNT(*) menghitung jumlah baris."},
-  {q:"Perintah yang digunakan untuk mengubah data di tabel adalah...",
-   opts:["INSERT","UPDATE","DELETE","ALTER"], correct:1, fb:"UPDATE digunakan untuk mengubah nilai baris."}
+  {q:"Setelah COMMIT dijalankan pada sebuah transaksi, kita masih bisa ROLLBACK untuk membatalkannya. Benar atau salah?",
+   opts:["Benar","Salah"], correct:1, fb:"Salah — setelah COMMIT, perubahan sudah permanen dan tidak bisa dibatalkan dengan ROLLBACK."},
+  {q:"Perintah yang digunakan untuk mengubah nilai pada baris yang sudah ada di tabel adalah...",
+   opts:["INSERT","UPDATE","DELETE","ALTER"], correct:1, fb:"UPDATE digunakan untuk mengubah nilai baris yang sudah ada."}
 ];
 let qi = 0, score = 0, answered = false;
 const quizQ = document.getElementById('quizQ');
