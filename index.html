@@ -27,7 +27,6 @@
 
   ::selection{ background: rgba(255,180,84,0.25); }
 
-  /* ---------- Sidebar ---------- */
   .sidebar{
     width:270px; flex-shrink:0; background:var(--panel);
     border-right:1px solid var(--border); padding:28px 18px;
@@ -57,7 +56,6 @@
     font-size:11px; color:var(--text-dim); font-family:'Fira Code',monospace; line-height:1.6;
   }
 
-  /* ---------- Main ---------- */
   main{ flex:1; min-width:0; }
 
   .hero{
@@ -87,7 +85,6 @@
   .cursor-blink{ display:inline-block; width:7px; height:15px; background:var(--cursor); vertical-align:middle; animation:blink 1s step-start infinite; }
   @keyframes blink{ 50%{ opacity:0; } }
 
-  /* ---------- Section ---------- */
   .section{ padding:52px 56px; border-bottom:1px solid var(--border); }
   .section-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:6px; }
   .section-num{ font-family:'Fira Code',monospace; color:var(--text-dim); font-size:13px; }
@@ -108,7 +105,6 @@
   .callout-text{ font-size:13.5px; color:#dcd3f7; line-height:1.65; }
   .callout-text b{ color:#fff; }
 
-  /* ---------- Query card ---------- */
   .query-card{
     background:var(--panel); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:16px; max-width:800px;
   }
@@ -138,7 +134,6 @@
   table.result td{ padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--text); }
   table.result tr:hover td{ background:rgba(255,255,255,0.02); }
 
-  /* ---------- Quiz ---------- */
   .quiz-box{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:24px; max-width:760px; }
   .quiz-progress{ font-family:'Fira Code',monospace; font-size:12px; color:var(--text-dim); margin-bottom:16px; }
   .quiz-q{ font-size:15.5px; font-weight:700; color:#eef2f8; margin-bottom:16px; line-height:1.5; }
@@ -179,18 +174,23 @@
     <div class="nav-group-label">Week 2 — Query Dasar</div>
     <a class="nav-link" data-target="sec-select"><span class="tag">01</span> SELECT &amp; Kolom</a>
     <a class="nav-link" data-target="sec-where"><span class="tag">02</span> WHERE &amp; Kondisi</a>
-    <a class="nav-link" data-target="sec-wildcard"><span class="tag">03</span> Wildcard LIKE</a>
+    <a class="nav-link" data-target="sec-wildcard"><span class="tag">03</span> Wildcard, LIKE &amp; REGEXP</a>
     <a class="nav-link" data-target="sec-string"><span class="tag">04</span> String Function</a>
     <a class="nav-link" data-target="sec-date"><span class="tag">05</span> Date Function</a>
+    <a class="nav-link" data-target="sec-orderby"><span class="tag">06</span> ORDER BY, LIMIT, DISTINCT</a>
+    <a class="nav-link" data-target="sec-aggregate"><span class="tag">07</span> Aggregate &amp; GROUP BY</a>
+    <a class="nav-link" data-target="sec-betweennull"><span class="tag">08</span> BETWEEN &amp; IS NULL</a>
   </div>
 
   <div class="nav-group">
     <div class="nav-group-label">Week 3 — Ubah Data</div>
-    <a class="nav-link" data-target="sec-join"><span class="tag">06</span> Simple Join</a>
-    <a class="nav-link" data-target="sec-update"><span class="tag">07</span> UPDATE</a>
-    <a class="nav-link" data-target="sec-alter"><span class="tag">08</span> ALTER TABLE</a>
-    <a class="nav-link" data-target="sec-delete"><span class="tag">09</span> DELETE</a>
-    <a class="nav-link" data-target="sec-transaction"><span class="tag">10</span> TRANSACTION</a>
+    <a class="nav-link" data-target="sec-join"><span class="tag">09</span> Simple Join</a>
+    <a class="nav-link" data-target="sec-innerjoin"><span class="tag">10</span> INNER / LEFT JOIN</a>
+    <a class="nav-link" data-target="sec-insert"><span class="tag">11</span> INSERT INTO</a>
+    <a class="nav-link" data-target="sec-update"><span class="tag">12</span> UPDATE</a>
+    <a class="nav-link" data-target="sec-alter"><span class="tag">13</span> ALTER TABLE</a>
+    <a class="nav-link" data-target="sec-delete"><span class="tag">14</span> DELETE</a>
+    <a class="nav-link" data-target="sec-transaction"><span class="tag">15</span> TRANSACTION</a>
   </div>
 
   <div class="nav-group">
@@ -307,8 +307,8 @@ WHERE productPrice > 200000;</pre>
 
   <!-- 03 WILDCARD -->
   <section class="section" id="sec-wildcard">
-    <div class="section-head"><span class="section-num">03</span><span class="section-title">Wildcard &amp; LIKE</span></div>
-    <p class="section-desc">Wildcard dipakai bersama <code>LIKE</code> untuk mencocokkan sebagian teks, bukan teks yang persis sama.</p>
+    <div class="section-head"><span class="section-num">03</span><span class="section-title">Wildcard, LIKE &amp; REGEXP</span></div>
+    <p class="section-desc">Wildcard dipakai bersama <code>LIKE</code> untuk mencocokkan sebagian teks, bukan teks yang persis sama. Untuk pola yang lebih rumit, gunakan <code>REGEXP</code>.</p>
     <div class="topic">
       <div class="topic-title"><span class="icon">▸</span> % sebagai penampung karakter bebas</div>
       <p class="topic-text">Tanda <code>%</code> berarti "abaikan berapa pun karakter di posisi ini". Contoh <code>'a%'</code> berarti mencari data yang <b>diawali</b> huruf a, tidak peduli apa pun setelahnya.</p>
@@ -319,9 +319,33 @@ WHERE customerName LIKE 'a%';</pre>
         <div class="result-wrap"></div>
       </div>
     </div>
-    <div class="callout">
-      <span class="icon">💡</span>
-      <div class="callout-text">Selain <code>%</code>, ada juga <code>_</code> yang mewakili tepat satu karakter bebas (misalnya <code>'A_i'</code> cocok dengan "Adi" atau "Ani"). Simbol <code>^</code> dan <code>$</code> yang disebut di catatan aslinya adalah bagian dari <b>regular expression</b> (dipakai lewat <code>REGEXP</code>), bukan bagian dari <code>LIKE</code> — <code>^</code> menandai awal teks dan <code>$</code> menandai akhir teks.</div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> _ untuk tepat satu karakter</div>
+      <p class="topic-text">Setiap <code>_</code> di dalam pola mewakili <b>persis satu karakter</b>, apa pun karakternya. Kalau <code>%</code> itu "sembarang panjang", <code>_</code> itu "sembarang isi, tapi panjangnya tetap 1".</p>
+      <div class="query-card" data-result="qU1">
+        <div class="query-card-head"><span>mscustomer</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mscustomer
+WHERE customerName LIKE 'A__ Wijaya';</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> REGEXP untuk pola yang lebih fleksibel</div>
+      <p class="topic-text"><code>REGEXP</code> memakai regular expression, jauh lebih powerful dari <code>LIKE</code>. Beberapa simbol yang sering dipakai: <code>^</code> = awal teks, <code>$</code> = akhir teks, <code>[0-9]</code> = salah satu digit, <code>{n}</code> = tepat n kali pengulangan, <code>|</code> = "atau".</p>
+      <div class="query-card" data-result="qR1">
+        <div class="query-card-head"><span>astronauts — format id</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM astronauts
+WHERE astronautId REGEXP '^AS[0-9]{3}$';</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <div class="query-card" data-result="qR2">
+        <div class="query-card-head"><span>mscustomer — awalan A atau B</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM mscustomer
+WHERE customerName REGEXP '^(A|B)';</pre>
+        <div class="result-wrap"></div>
+      </div>
     </div>
   </section>
 
@@ -377,6 +401,18 @@ FROM msproduct;</pre>
         <div class="result-wrap"></div>
       </div>
     </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> TRIM &amp; ROUND</div>
+      <p class="topic-text"><code>TRIM(kolom)</code> membuang spasi kosong di awal dan akhir teks — berguna untuk data yang tidak rapi. <code>ROUND(angka, n)</code> membulatkan angka desimal ke n digit di belakang koma.</p>
+      <div class="query-card" data-result="qT1">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT TRIM('  Keyboard Mekanik  ') AS rapi,
+       ROUND(productPrice * 1.11, 2) AS hargaPlusPajak
+FROM msproduct;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
   </section>
 
   <!-- 05 DATE FUNCTION -->
@@ -422,9 +458,131 @@ FROM transactionheader;</pre>
     </div>
   </section>
 
-  <!-- 06 JOIN -->
+  <!-- 06 ORDER BY / LIMIT / DISTINCT -->
+  <section class="section" id="sec-orderby">
+    <div class="section-head"><span class="section-num">06</span><span class="section-title">ORDER BY, LIMIT &amp; DISTINCT</span></div>
+    <p class="section-desc">Mengatur urutan tampil hasil, membatasi jumlah baris, dan membuang nilai duplikat.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> ORDER BY — mengurutkan hasil</div>
+      <p class="topic-text"><code>ORDER BY kolom ASC</code> mengurutkan naik (default kalau tidak ditulis), <code>ORDER BY kolom DESC</code> mengurutkan turun. Bisa juga mengurutkan berdasarkan lebih dari satu kolom, dipisah koma.</p>
+      <div class="query-card" data-result="q23">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT productName, productPrice
+FROM msproduct
+ORDER BY productPrice DESC;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> LIMIT — membatasi jumlah baris</div>
+      <p class="topic-text"><code>LIMIT n</code> membatasi hasil hanya n baris pertama. Sering dipakai bersama <code>ORDER BY</code>, misalnya untuk mencari "3 produk termurah".</p>
+      <div class="query-card" data-result="q24">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT productName, productPrice
+FROM msproduct
+ORDER BY productPrice ASC
+LIMIT 3;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> DISTINCT — membuang duplikat</div>
+      <p class="topic-text"><code>DISTINCT</code> hanya menampilkan nilai yang unik, kalau ada baris dengan nilai yang sama persis akan ditampilkan sekali saja.</p>
+      <div class="query-card" data-result="q25">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT DISTINCT categoryId
+FROM msproduct;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 AGGREGATE -->
+  <section class="section" id="sec-aggregate">
+    <div class="section-head"><span class="section-num">07</span><span class="section-title">Aggregate Function &amp; GROUP BY</span></div>
+    <p class="section-desc">Fungsi agregat meringkas banyak baris menjadi satu nilai (total, rata-rata, dsb). Kalau digabung dengan <code>GROUP BY</code>, peringkasan dilakukan per kelompok.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> COUNT, SUM, AVG, MAX, MIN</div>
+      <p class="topic-text"><code>COUNT(*)</code> menghitung jumlah baris. <code>SUM</code> menjumlahkan, <code>AVG</code> merata-ratakan, <code>MAX</code>/<code>MIN</code> mencari nilai tertinggi/terendah pada sebuah kolom angka.</p>
+      <div class="query-card" data-result="q26">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT COUNT(*) AS totalProduk,
+       MAX(productPrice) AS termahal,
+       MIN(productPrice) AS termurah
+FROM msproduct;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> GROUP BY — meringkas per kelompok</div>
+      <p class="topic-text">Kolom yang ada di <code>GROUP BY</code> menjadi dasar pengelompokan; setiap kelompok diringkas jadi satu baris hasil lewat fungsi agregat.</p>
+      <div class="query-card" data-result="q27">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT categoryId,
+       COUNT(*) AS jumlah,
+       AVG(productPrice) AS rataRata
+FROM msproduct
+GROUP BY categoryId;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> HAVING — menyaring hasil GROUP BY</div>
+      <p class="topic-text"><code>WHERE</code> menyaring baris sebelum dikelompokkan, sedangkan <code>HAVING</code> menyaring kelompok setelah agregat dihitung. Karena itu <code>HAVING</code> bisa memakai hasil fungsi agregat, sementara <code>WHERE</code> tidak.</p>
+      <div class="query-card" data-result="q28">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT categoryId, SUM(productStock) AS totalStok
+FROM msproduct
+GROUP BY categoryId
+HAVING SUM(productStock) > 100;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 BETWEEN & NULL -->
+  <section class="section" id="sec-betweennull">
+    <div class="section-head"><span class="section-num">08</span><span class="section-title">BETWEEN &amp; IS NULL</span></div>
+    <p class="section-desc">Dua kondisi WHERE tambahan yang sering dipakai: rentang nilai, dan pengecekan data kosong.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> BETWEEN — rentang nilai</div>
+      <p class="topic-text"><code>kolom BETWEEN a AND b</code> setara dengan <code>kolom &gt;= a AND kolom &lt;= b</code> — batas atas dan bawah ikut termasuk (inclusive).</p>
+      <div class="query-card" data-result="q30">
+        <div class="query-card-head"><span>msproduct</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM msproduct
+WHERE productPrice BETWEEN 100000 AND 500000;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> IS NULL &amp; IS NOT NULL</div>
+      <p class="topic-text">Nilai kosong (<code>NULL</code>) tidak bisa dicek dengan <code>= NULL</code> karena NULL berarti "tidak diketahui", bukan sebuah nilai. Harus memakai <code>IS NULL</code> atau <code>IS NOT NULL</code>.</p>
+      <div class="query-card" data-result="q31">
+        <div class="query-card-head"><span>astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM astronauts
+WHERE gender IS NULL;</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <div class="query-card" data-result="q32">
+        <div class="query-card-head"><span>astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT * FROM astronauts
+WHERE gender IS NOT NULL;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 JOIN -->
   <section class="section" id="sec-join">
-    <div class="section-head"><span class="section-num">06</span><span class="section-title">Simple Join</span></div>
+    <div class="section-head"><span class="section-num">09</span><span class="section-title">Simple Join</span></div>
     <p class="section-desc">Menggabungkan data dari dua tabel lewat atribut yang nilainya sama, tanpa memakai keyword <code>JOIN</code>. Kolom yang disamakan tidak harus foreign key ke primary key, cukup dua atribut yang nilainya berkorespondensi.</p>
 
     <div class="topic">
@@ -450,9 +608,71 @@ WHERE missions.astronautId = astronauts.astronautId;</pre>
     </div>
   </section>
 
-  <!-- 07 UPDATE -->
+  <!-- 10 INNER / LEFT JOIN -->
+  <section class="section" id="sec-innerjoin">
+    <div class="section-head"><span class="section-num">10</span><span class="section-title">INNER JOIN &amp; LEFT JOIN</span></div>
+    <p class="section-desc">Cara standar menggabungkan tabel memakai keyword <code>JOIN ... ON ...</code>. Lebih jelas dibaca dibanding menaruh dua tabel di FROM lalu menyaring di WHERE, dan hasilnya sama untuk INNER JOIN.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> INNER JOIN — hanya baris yang cocok</div>
+      <p class="topic-text"><code>INNER JOIN ... ON syarat</code> hanya mengembalikan baris yang punya pasangan di kedua tabel. Sama seperti simple join di atas, tapi lebih mudah dibaca karena syarat penghubung ditulis dekat nama tabel yang digabung.</p>
+      <div class="query-card" data-result="q35">
+        <div class="query-card-head"><span>missions INNER JOIN astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT missionId, astronauts.astronautId, astronautName
+FROM missions
+INNER JOIN astronauts ON missions.astronautId = astronauts.astronautId;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> LEFT JOIN — semua baris tabel kiri tetap tampil</div>
+      <p class="topic-text"><code>LEFT JOIN</code> tetap menampilkan semua baris dari tabel di sisi kiri, meskipun tidak ada pasangannya di tabel kanan — kolom dari tabel kanan akan berisi <code>NULL</code> untuk baris yang tidak berpasangan.</p>
+      <div class="query-card" data-result="q36">
+        <div class="query-card-head"><span>missions LEFT JOIN astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT missionId, astronautName
+FROM missions
+LEFT JOIN astronauts ON missions.astronautId = astronauts.astronautId;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 INSERT -->
+  <section class="section" id="sec-insert">
+    <div class="section-head"><span class="section-num">11</span><span class="section-title">INSERT INTO — Menambah Baris</span></div>
+    <p class="section-desc">Bagian dari DML, dipakai untuk menambah baris data baru ke sebuah tabel.</p>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Menyebutkan nama kolom secara eksplisit</div>
+      <p class="topic-text">Cara paling aman: sebutkan nama kolom yang mau diisi, lalu nilainya di <code>VALUES</code> sesuai urutan. Kolom yang tidak disebut akan diisi <code>NULL</code> atau nilai default.</p>
+      <div class="query-card" data-result="q33">
+        <div class="query-card-head"><span>astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">INSERT INTO astronauts (astronautId, astronautName, experienceYears)
+VALUES ('AS004', 'Rudi Hartono', 5);</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">▸</span> Tanpa menyebut nama kolom</div>
+      <p class="topic-text">Kalau nama kolom tidak disebutkan, nilai di <code>VALUES</code> harus lengkap dan urut persis sesuai struktur tabel — cara ini lebih rawan salah kalau struktur tabel berubah.</p>
+      <div class="query-card" data-result="q34">
+        <div class="query-card-head"><span>astronauts</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">INSERT INTO astronauts
+VALUES ('AS005', 'Nina Putri', 7, 'Female');</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <div class="callout">
+        <span class="icon">⚠️</span>
+        <div class="callout-text">Kalau jumlah atau urutan nilai di <code>VALUES</code> tidak cocok dengan jumlah/urutan kolom di tabel, query akan error atau data masuk ke kolom yang salah. Menyebutkan nama kolom secara eksplisit jauh lebih aman.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 UPDATE -->
   <section class="section" id="sec-update">
-    <div class="section-head"><span class="section-num">07</span><span class="section-title">UPDATE — Mengubah Isi Baris</span></div>
+    <div class="section-head"><span class="section-num">12</span><span class="section-title">UPDATE — Mengubah Isi Baris</span></div>
     <p class="section-desc">Bagian dari DML (Data Manipulation Language), dipakai untuk mengubah nilai pada baris yang sudah ada.</p>
     <div class="topic">
       <div class="topic-title"><span class="icon">▸</span> Update satu atau beberapa kolom sekaligus</div>
@@ -471,9 +691,9 @@ WHERE astronautId = 'AS002';</pre>
     </div>
   </section>
 
-  <!-- 08 ALTER -->
+  <!-- 13 ALTER -->
   <section class="section" id="sec-alter">
-    <div class="section-head"><span class="section-num">08</span><span class="section-title">ALTER TABLE</span></div>
+    <div class="section-head"><span class="section-num">13</span><span class="section-title">ALTER TABLE</span></div>
     <p class="section-desc">Bagian dari DDL (Data Definition Language) — mengubah struktur tabel: menambah kolom, menambah aturan (constraint), atau mengganti nama.</p>
 
     <div class="topic">
@@ -505,9 +725,9 @@ ADD CONSTRAINT chk_min_experience CHECK (experienceYears >= 3);</pre>
     </div>
   </section>
 
-  <!-- 09 DELETE -->
+  <!-- 14 DELETE -->
   <section class="section" id="sec-delete">
-    <div class="section-head"><span class="section-num">09</span><span class="section-title">DELETE — Menghapus Baris</span></div>
+    <div class="section-head"><span class="section-num">14</span><span class="section-title">DELETE — Menghapus Baris</span></div>
     <p class="section-desc">Menghapus seluruh baris yang cocok dengan syarat <code>WHERE</code> — bukan menghapus kolom tertentu saja.</p>
     <div class="topic">
       <div class="query-card" data-result="q21">
@@ -523,9 +743,9 @@ WHERE missionLogId = 'ML001';</pre>
     </div>
   </section>
 
-  <!-- 10 TRANSACTION -->
+  <!-- 15 TRANSACTION -->
   <section class="section" id="sec-transaction">
-    <div class="section-head"><span class="section-num">10</span><span class="section-title">TRANSACTION</span></div>
+    <div class="section-head"><span class="section-num">15</span><span class="section-title">TRANSACTION</span></div>
     <p class="section-desc">Membungkus beberapa query menjadi satu sesi perubahan. Kalau di tengah jalan ada yang gagal atau belum yakin, seluruh perubahan sementara ini bisa dibatalkan sekaligus.</p>
 
     <div class="topic">
@@ -561,7 +781,7 @@ ROLLBACK;</pre>
   <!-- QUIZ -->
   <section class="section" id="sec-quiz">
     <div class="section-head"><span class="section-num">Q</span><span class="section-title">Kuis Interaktif</span></div>
-    <p class="section-desc">Enam pertanyaan singkat untuk menguji pemahaman materi di atas.</p>
+    <p class="section-desc">Beberapa pertanyaan singkat untuk menguji pemahaman materi di atas.</p>
 
     <div class="quiz-box">
       <div class="quiz-progress" id="quizProgress">Soal 1 / 6</div>
@@ -579,7 +799,6 @@ ROLLBACK;</pre>
 </main>
 
 <script>
-/* ---------- Sidebar active-link scroll ---------- */
 const links = document.querySelectorAll('.nav-link');
 const sections = [...document.querySelectorAll('.section')];
 links.forEach(l => l.addEventListener('click', () => {
@@ -594,7 +813,6 @@ const io = new IntersectionObserver((entries)=>{
 }, {rootMargin:'-20% 0px -70% 0px'});
 sections.forEach(s=>io.observe(s));
 
-/* ---------- Hero typing effect ---------- */
 const heroText = "SELECT customerName FROM mscustomer WHERE customerGender = 'female';";
 const heroEl = document.getElementById('heroTyped');
 let i = 0;
@@ -607,16 +825,16 @@ function typeHero(){
 }
 typeHero();
 
-/* ---------- SQL syntax highlighter ---------- */
-const KEYWORDS = ['SELECT','FROM','WHERE','AND','OR','IN','LIKE','AS','UPDATE','SET','ALTER','TABLE','ADD','COLUMN','CONSTRAINT','CHECK','DELETE','START','TRANSACTION','ROLLBACK','COMMIT','ORDER','BY','ENUM'];
-const FUNCS = ['LEFT','RIGHT','LOWER','UPPER','CONCAT','LENGTH','REPLACE','SUBSTR','CURDATE','NOW','DATEDIFF','TIMESTAMPDIFF','DAY','MONTH','YEAR','REGEXP'];
+const KEYWORDS = ['SELECT','FROM','WHERE','AND','OR','IN','LIKE','AS','UPDATE','SET','ALTER','TABLE','ADD','COLUMN','CONSTRAINT','CHECK','DELETE','START','TRANSACTION','ROLLBACK','COMMIT','ORDER','BY','ENUM','LIMIT','DISTINCT','GROUP','HAVING','INSERT','INTO','VALUES','INNER','JOIN','LEFT','ON','NOT','NULL','IS','BETWEEN','DESC','ASC','REGEXP'];
+const FUNCS = ['LEFT','RIGHT','LOWER','UPPER','CONCAT','LENGTH','REPLACE','SUBSTR','CURDATE','NOW','DATEDIFF','TIMESTAMPDIFF','DAY','MONTH','YEAR','TRIM','ROUND','COUNT','SUM','AVG','MAX','MIN'];
 function highlight(code){
   let escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   escaped = escaped.replace(/'([^']*)'/g, m => `§STR§${m}§/STR§`);
-  const kwPattern = new RegExp('\\b(' + KEYWORDS.join('|') + ')\\b', 'g');
   const fnPattern = new RegExp('\\b(' + FUNCS.join('|') + ')(?=\\()', 'g');
-  escaped = escaped.replace(kwPattern, '<span class="k">$1</span>');
-  escaped = escaped.replace(fnPattern, '<span class="fn">$1</span>');
+  escaped = escaped.replace(fnPattern, '§FN§$1§/FN§');
+  const kwPattern = new RegExp('\\b(' + KEYWORDS.join('|') + ')\\b', 'g');
+  escaped = escaped.replace(kwPattern, (m, p1) => `<span class="k">${p1}</span>`);
+  escaped = escaped.replace(/§FN§([^§]*)§\/FN§/g, '<span class="fn">$1</span>');
   escaped = escaped.replace(/\b(\d+(\.\d+)?)\b/g, '<span class="num">$1</span>');
   escaped = escaped.replace(/§STR§([^§]*)§\/STR§/g, '<span class="str">$1</span>');
   return escaped;
@@ -625,7 +843,6 @@ document.querySelectorAll('pre.sql').forEach(pre=>{
   pre.innerHTML = highlight(pre.textContent);
 });
 
-/* ---------- Mock query results ---------- */
 const RESULTS = {
   q1: {cols:['customerName','customerAddress','customerGender'], rows:[
     ['Ani Wijaya','Jl. Merdeka No 1','Female'],
@@ -702,7 +919,59 @@ const RESULTS = {
   q21: {cols:['status'], rows:[
     ['1 baris terhapus dari missionlogs (missionLogId = ML001)']]},
   q22: {cols:['missionId','missionStatus','logMessage'], rows:[
-    ['MI002','Completed','Something error in this event']], note:'hasil SELECT sebelum ROLLBACK — setelah ROLLBACK, kedua UPDATE di atas dibatalkan dan data kembali seperti semula'}
+    ['MI002','Completed','Something error in this event']], note:'hasil SELECT sebelum ROLLBACK — setelah ROLLBACK, kedua UPDATE di atas dibatalkan dan data kembali seperti semula'},
+  qU1: {cols:['customerId','customerName','customerAddress','customerGender'], rows:[
+    ['CU001','Ani Wijaya','Jl. Merdeka No 1','Female']], note:'"A__ Wijaya" cocok kalau setelah A ada tepat 2 karakter bebas, lalu spasi dan "Wijaya"'},
+  qR1: {cols:['astronautId','astronautName','experienceYears'], rows:[
+    ['AS001','Maya Chen','8'],
+    ['AS002','Kevin Wu','15']], note:'hanya id dengan pola persis "AS" + 3 digit yang cocok'},
+  qR2: {cols:['customerId','customerName','customerAddress','customerGender'], rows:[
+    ['CU001','Ani Wijaya','Jl. Merdeka No 1','Female'],
+    ['CU002','Budi Santoso','Jl. Sudirman No 5','Male'],
+    ['CU003','Amanda Putri','Jl. Thamrin No 9','Female']], note:'nama yang diawali huruf A atau B'},
+  qT1: {cols:['rapi','hargaPlusPajak'], rows:[
+    ['Keyboard Mekanik','943500']], note:'spasi di awal/akhir teks terpotong; harga dibulatkan 2 angka desimal'},
+  q23: {cols:['productName','productPrice'], rows:[
+    ['Meja Kerja','1200000'],
+    ['Keyboard Mekanik','850000'],
+    ['Mouse Wireless','250000'],
+    ['Salmon Sashimi','120000'],
+    ['Tuna Roll','95000']], note:'diurutkan dari harga tertinggi ke terendah'},
+  q24: {cols:['productName','productPrice'], rows:[
+    ['Tuna Roll','95000'],
+    ['Salmon Sashimi','120000'],
+    ['Mouse Wireless','250000']], note:'3 baris termurah saja, sisanya dipotong oleh LIMIT'},
+  q25: {cols:['categoryId'], rows:[
+    ['CT002'],['CT003'],['CT005']], note:'kategori yang sama hanya muncul sekali'},
+  q26: {cols:['totalProduk','termahal','termurah'], rows:[
+    ['5','1200000','95000']]},
+  q27: {cols:['categoryId','jumlah','rataRata'], rows:[
+    ['CT002','2','107500'],
+    ['CT003','2','550000'],
+    ['CT005','1','1200000']]},
+  q28: {cols:['categoryId','totalStok'], rows:[
+    ['CT002','150'],
+    ['CT003','130']], note:'CT005 dibuang karena total stoknya cuma 10 (tidak lolos HAVING > 100)'},
+  q30: {cols:['productId','productName','categoryId','productPrice','productStock'], rows:[
+    ['PR001','Salmon Sashimi','CT002','120000','50'],
+    ['PR004','Mouse Wireless','CT003','250000','100']], note:'harga antara 100.000 s/d 500.000, batas atas & bawah termasuk'},
+  q31: {cols:['astronautId','astronautName','experienceYears','gender'], rows:[
+    ['AS001','Maya Chen','8','NULL'],
+    ['AS002','Kevin Wu','15','NULL']], note:'baris yang kolom gender-nya masih kosong'},
+  q32: {cols:['astronautId','astronautName','experienceYears','gender'], rows:[
+    ['AS004','Rudi Hartono','5','—'],
+    ['AS005','Nina Putri','7','Female']], note:'baris yang kolom gender-nya sudah terisi'},
+  q33: {cols:['status'], rows:[
+    ['1 baris ditambahkan ke astronauts (AS004)']]},
+  q34: {cols:['status'], rows:[
+    ['1 baris ditambahkan ke astronauts (AS005) — nilai harus lengkap & urut sesuai kolom tabel']]},
+  q35: {cols:['missionId','astronautId','astronautName'], rows:[
+    ['MI001','AS001','Maya Chen'],
+    ['MI002','AS002','Kevin Wu']], note:'sama persis hasilnya dengan simple join + WHERE'},
+  q36: {cols:['missionId','astronautName'], rows:[
+    ['MI001','Maya Chen'],
+    ['MI002','Kevin Wu'],
+    ['MI003','NULL']], note:'MI003 tetap tampil walau belum ada astronot yang cocok — kolom astronautName jadi NULL'}
 };
 
 document.querySelectorAll('.query-card').forEach(card=>{
@@ -726,7 +995,6 @@ document.querySelectorAll('.query-card').forEach(card=>{
   });
 });
 
-/* ---------- Quiz ---------- */
 const QUIZ = [
   {q:"Apa perbedaan hasil antara <code>customerGender = 'female'</code> dan <code>customerGender LIKE 'female'</code> (tanpa wildcard)?",
    opts:["Hasilnya sama persis","LIKE selalu lebih lambat tapi beda hasil","= hanya bisa dipakai untuk angka","LIKE otomatis mengabaikan huruf besar/kecil"], correct:0,
@@ -745,7 +1013,16 @@ const QUIZ = [
    fb:"Tanpa syarat penghubung di WHERE, setiap baris di tabel pertama dipasangkan dengan setiap baris di tabel kedua."},
   {q:"Setelah <code>START TRANSACTION</code>, beberapa UPDATE dijalankan, lalu dipanggil <code>ROLLBACK</code>. Apa yang terjadi pada data?",
    opts:["Semua perubahan sejak START TRANSACTION dibatalkan","Perubahan tersimpan permanen","Hanya UPDATE pertama yang dibatalkan","Tabel ikut terhapus"], correct:0,
-   fb:"ROLLBACK mengembalikan data ke kondisi sebelum transaksi dimulai. Untuk menyimpan permanen, dipakai COMMIT."}
+   fb:"ROLLBACK mengembalikan data ke kondisi sebelum transaksi dimulai. Untuk menyimpan permanen, dipakai COMMIT."},
+  {q:"Kenapa <code>WHERE gender = NULL</code> tidak akan pernah mengembalikan hasil, walau ada baris yang kosong?",
+   opts:["NULL harus ditulis pakai kutip 'NULL'","NULL berarti tidak diketahui, harus dicek dengan IS NULL bukan =","Kolom gender tidak boleh NULL","WHERE tidak mendukung NULL sama sekali"], correct:1,
+   fb:"NULL bukan sebuah nilai yang bisa dibandingkan dengan =. Gunakan IS NULL atau IS NOT NULL untuk mengecek data kosong."},
+  {q:"Apa perbedaan utama <code>WHERE</code> dan <code>HAVING</code> saat dipakai bersama GROUP BY?",
+   opts:["Tidak ada beda, bisa saling gantikan","WHERE menyaring baris sebelum dikelompokkan, HAVING menyaring kelompok setelah agregat dihitung","HAVING hanya bisa dipakai tanpa GROUP BY","WHERE hanya untuk angka, HAVING untuk teks"], correct:1,
+   fb:"WHERE bekerja pada baris mentah sebelum GROUP BY, sedangkan HAVING menyaring hasil kelompok setelah fungsi agregat (COUNT, SUM, dst) dihitung."},
+  {q:"Kalau tabel A di-<code>LEFT JOIN</code> ke tabel B tapi sebuah baris di A tidak punya pasangan di B, apa yang terjadi?",
+   opts:["Baris di A ikut hilang dari hasil","Query menghasilkan error","Baris di A tetap tampil, kolom dari B menjadi NULL","Baris tersebut otomatis dihapus dari tabel A"], correct:2,
+   fb:"LEFT JOIN selalu mempertahankan semua baris tabel kiri; kolom dari tabel kanan yang tidak punya pasangan akan diisi NULL."}
 ];
 let qi = 0, score = 0, answered = false;
 const quizQ = document.getElementById('quizQ');
@@ -798,6 +1075,8 @@ quizNext.addEventListener('click', ()=>{
     quizNext.onclick = ()=>{ qi=0; score=0; quizScore.textContent = `Skor: 0 / ${QUIZ.length}`; quizNext.onclick=null; quizNext.addEventListener('click', arguments.callee); renderQuiz(); location.reload(); };
   }
 });
+quizProgress.textContent = `Soal 1 / ${QUIZ.length}`;
+quizScore.textContent = `Skor: 0 / ${QUIZ.length}`;
 renderQuiz();
 </script>
 
