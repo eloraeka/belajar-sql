@@ -231,6 +231,7 @@
     <a class="nav-link" data-target="sec-15"><span class="tag">15</span> Kondisi Majemuk</a>
     <a class="nav-link" data-target="sec-16"><span class="tag">16</span> Kamus String Function</a>
     <a class="nav-link" data-target="sec-17"><span class="tag">17</span> Kamus Date Function</a>
+    <a class="nav-link" data-target="sec-17b"><span class="tag">17b</span> Kamus Numeric Function</a>
     <a class="nav-link" data-target="sec-18"><span class="tag">18</span> ORDER BY</a>
     <a class="nav-link" data-target="sec-19"><span class="tag">19</span> Aggregate Function</a>
     <a class="nav-link" data-target="sec-20"><span class="tag">20</span> GROUP BY</a>
@@ -495,6 +496,18 @@ VALUES ('M001', 'Budi', 'Informatika', 20, 'budi@mail.com');</pre>
         <div class="result-wrap"></div>
       </div>
     </div>
+
+    <div class="topic">
+      <div class="topic-title"><span class="icon">◇</span>DISTINCT — hilangkan duplikat</div>
+      <p class="topic-text"><code>DISTINCT</code> membuat hasil hanya menampilkan nilai yang unik, baris yang nilainya sama persis akan digabung jadi satu.</p>
+      <div class="term-syntax">SELECT DISTINCT kolom FROM table_name;</div>
+      <div class="query-card" data-result="q13distinct">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT DISTINCT jurusan
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
   </section>
 
   <!-- 14 WHERE OPERATOR -->
@@ -550,6 +563,19 @@ WHERE nama LIKE 'B%';</pre>
         <pre class="sql">SELECT nama, usia
 FROM mahasiswa
 WHERE usia > 18;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge op">BETWEEN</span><span class="term-def">Menyaring nilai dalam sebuah rentang, termasuk kedua batasnya (inklusif).</span></div>
+      <div class="term-syntax">SELECT kolom FROM table WHERE kolom BETWEEN nilai1 AND nilai2;</div>
+      <p class="topic-text">Contoh di bawah setara dengan menulis <code>usia &gt;= 18 AND usia &lt;= 22</code>, tapi lebih ringkas. BETWEEN juga bisa dipakai untuk rentang tanggal.</p>
+      <div class="query-card" data-result="q14between">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama, usia
+FROM mahasiswa
+WHERE usia BETWEEN 18 AND 22;</pre>
         <div class="result-wrap"></div>
       </div>
     </div>
@@ -649,11 +675,28 @@ FROM mahasiswa;</pre>
     </div>
 
     <div class="topic">
-      <div class="term-row"><span class="term-badge fn">REPLACE(kolom, cari, ganti)</span><span class="term-def">Mengganti setiap kemunculan sebuah kata dalam teks dengan kata lain.</span></div>
+      <div class="term-row"><span class="term-badge fn">REPLACE(kolom, cari, ganti)</span><span class="term-def">Mengganti setiap kemunculan sebuah kata/potongan teks tertentu dalam kolom dengan kata lain. REPLACE mencari berdasarkan isi teksnya — kalau potongan yang dicari tidak ditemukan, tidak terjadi perubahan apa pun.</span></div>
       <div class="query-card" data-result="q16replace">
         <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
         <pre class="sql">SELECT REPLACE(jurusan, 'Informatika', 'Ilmu Komputer') AS jurusan_baru
 FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+      <p class="topic-text">REPLACE juga bisa dipakai untuk mengganti sebagian pola teks yang berulang, misalnya merapikan pemisah tanggal:</p>
+      <div class="query-card" data-result="q16replace2">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT REPLACE('2024/07/17', '/', '-') AS tanggal_format;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">INSERT(str, pos, len, ganti)</span><span class="term-def">Bukan <code>INSERT INTO</code>. Fungsi string ini mengganti sejumlah <code>len</code> karakter mulai posisi <code>pos</code> dengan teks baru, apa pun isi karakter aslinya — beda dengan REPLACE yang harus mencocokkan isi teksnya dulu.</span></div>
+      <div class="term-syntax">INSERT(string, posisi_mulai, jumlah_karakter, teks_pengganti)</div>
+      <p class="topic-text">Contoh berikut menyensor 4 digit tengah nomor telepon, tidak peduli angka apa yang ada di sana.</p>
+      <div class="query-card" data-result="q16insertfn">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT INSERT('081234567890', 4, 4, 'XXXX') AS no_hp_disensor;</pre>
         <div class="result-wrap"></div>
       </div>
     </div>
@@ -667,12 +710,59 @@ FROM mahasiswa;</pre>
         <div class="result-wrap"></div>
       </div>
     </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">REVERSE(kolom)</span><span class="term-def">Membalik urutan karakter dalam sebuah teks.</span></div>
+      <div class="query-card" data-result="q16reverse">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama, REVERSE(nama) AS nama_terbalik
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">POSITION(cari IN kolom)</span><span class="term-def">Mencari di posisi karakter ke berapa sebuah substring pertama kali muncul dalam teks (dihitung mulai dari 1). Kalau tidak ditemukan, hasilnya 0.</span></div>
+      <div class="term-syntax">POSITION(substring IN string)</div>
+      <div class="query-card" data-result="q16position">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT email, POSITION('@' IN email) AS posisi_at
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">LOCATE(cari, kolom [, start])</span><span class="term-def">Fungsinya sama persis dengan POSITION — mencari posisi sebuah substring — tapi ditulis dengan gaya fungsi biasa (argumen dipisah koma), dan punya argumen tambahan opsional untuk menentukan mulai mencari dari posisi ke berapa.</span></div>
+      <div class="term-syntax">LOCATE(substring, string, posisi_mulai_opsional)</div>
+      <div class="callout info">
+        <div class="icon">ℹ</div>
+        <div class="callout-text"><b>POSITION vs LOCATE:</b> hasilnya identik. Bedanya cuma format penulisan — POSITION pakai kata kunci <code>IN</code>, LOCATE pakai koma seperti fungsi pada umumnya dan boleh diberi parameter posisi awal pencarian.</div>
+      </div>
+      <div class="query-card" data-result="q16locate">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT email, LOCATE('@', email) AS posisi_at
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">GROUP_CONCAT(kolom)</span><span class="term-def">Fungsi agregat yang menggabungkan nilai dari banyak baris dalam satu grup menjadi satu string, dipisah koma secara default. Biasanya dipakai bersama <code>GROUP BY</code>.</span></div>
+      <div class="query-card" data-result="q16groupconcat">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT jurusan, GROUP_CONCAT(nama) AS daftar_mahasiswa
+FROM mahasiswa
+GROUP BY jurusan;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
   </section>
 
   <!-- 17 KAMUS DATE FUNCTION -->
   <section class="section" id="sec-17">
     <div class="section-head"><span class="section-num">17</span><span class="section-title">Kamus Date Function</span></div>
-    <p class="section-desc">Fungsi bawaan untuk membaca dan menghitung selisih tanggal / waktu.</p>
+    <p class="section-desc">Fungsi bawaan untuk membaca, memformat, dan menghitung selisih tanggal / waktu.</p>
 
     <div class="topic">
       <div class="term-row"><span class="term-badge dt">CURDATE()</span><span class="term-def">Menampilkan tanggal hari ini (tanpa jam).</span></div>
@@ -703,6 +793,17 @@ FROM contoh_tipe;</pre>
     </div>
 
     <div class="topic">
+      <div class="term-row"><span class="term-badge dt">DATE_SUB(tanggal, INTERVAL n unit)</span><span class="term-def">Mengurangi sebuah tanggal dengan sejumlah interval waktu (hari, bulan, tahun, dll). Kebalikannya adalah <code>DATE_ADD</code> yang menambahkan.</span></div>
+      <div class="term-syntax">DATE_SUB(tanggal, INTERVAL nilai unit)</div>
+      <p class="topic-text">Beda dengan <code>DATEDIFF</code>: DATEDIFF membandingkan dua tanggal untuk mencari selisihnya, sedangkan DATE_SUB menghasilkan tanggal baru dari satu tanggal yang dikurangi mundur.</p>
+      <div class="query-card" data-result="q17datesub">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT DATE_SUB(CURDATE(), INTERVAL 30 DAY) AS tanggal_30_hari_lalu;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
       <div class="term-row"><span class="term-badge dt">TIMESTAMPDIFF(unit, a, b)</span><span class="term-def">Sama seperti DATEDIFF tapi bisa memilih satuan (DAY, MONTH, YEAR) dan hasilnya b − a.</span></div>
       <div class="query-card" data-result="q17tsdiff">
         <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
@@ -723,6 +824,56 @@ FROM contoh_tipe;</pre>
         <div class="result-wrap"></div>
       </div>
     </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge dt">DATE_FORMAT(kolom, format)</span><span class="term-def">Menampilkan tanggal dalam format teks sesuai keinginan, memakai kode-kode format khusus.</span></div>
+      <div class="op-grid">
+        <div class="op-chip"><div class="op-sym">%d</div><div class="op-desc">huruf kecil → tanggal dalam ANGKA 2 digit (01–31)</div></div>
+        <div class="op-chip"><div class="op-sym">%M</div><div class="op-desc">huruf besar → nama BULAN dalam bentuk STRING (January, February, ...)</div></div>
+        <div class="op-chip"><div class="op-sym">%m</div><div class="op-desc">huruf kecil → bulan dalam angka 2 digit (01–12)</div></div>
+        <div class="op-chip"><div class="op-sym">%Y</div><div class="op-desc">tahun 4 digit</div></div>
+      </div>
+      <div class="callout info">
+        <div class="icon">ℹ</div>
+        <div class="callout-text"><b>Pola penulisan:</b> huruf kecil biasanya menghasilkan angka, huruf besar biasanya menghasilkan nama/string. Contoh: <code>%d</code> = angka tanggal, <code>%M</code> = nama bulan.</div>
+      </div>
+      <div class="query-card" data-result="q17dateformat">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT DATE_FORMAT(tanggal_lahir, '%d %M %Y') AS tanggal_rapi
+FROM contoh_tipe;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17b NUMERIC & MISC FUNCTION -->
+  <section class="section" id="sec-17b">
+    <div class="section-head"><span class="section-num">17b</span><span class="section-title">Kamus Numeric Function</span></div>
+    <p class="section-desc">Fungsi bawaan untuk mengolah angka: pembulatan dan pembangkit angka acak.</p>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">ROUND(angka, n)</span><span class="term-def">Membulatkan angka ke sejumlah n digit di belakang koma. Jika n dikosongkan (0), dibulatkan ke bilangan bulat terdekat.</span></div>
+      <div class="term-syntax">ROUND(angka, jumlah_digit_desimal)</div>
+      <div class="query-card" data-result="q17bround">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT AVG(usia) AS rata_mentah,
+       ROUND(AVG(usia), 1) AS rata_dibulatkan
+FROM mahasiswa;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
+
+    <div class="topic">
+      <div class="term-row"><span class="term-badge fn">RAND()</span><span class="term-def">Menghasilkan angka acak (random) antara 0 sampai 1. Sering dikombinasikan dengan <code>ORDER BY RAND()</code> untuk mengacak urutan baris.</span></div>
+      <div class="query-card" data-result="q17brand">
+        <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
+        <pre class="sql">SELECT nama
+FROM mahasiswa
+ORDER BY RAND()
+LIMIT 1;</pre>
+        <div class="result-wrap"></div>
+      </div>
+    </div>
   </section>
 
   <!-- 18 ORDER BY -->
@@ -740,7 +891,7 @@ ORDER BY usia DESC;</pre>
   <!-- 19 Aggregate Function -->
   <section class="section" id="sec-19">
     <div class="section-head"><span class="section-num">19</span><span class="section-title">Aggregate Function</span></div>
-    <p class="section-desc">COUNT, SUM, AVG, MAX, MIN — meringkas banyak baris menjadi satu nilai.</p>
+    <p class="section-desc">COUNT, SUM, AVG, MAX, MIN, GROUP_CONCAT — meringkas banyak baris menjadi satu nilai (atau satu string gabungan).</p>
     <div class="query-card" data-result="q19">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
       <pre class="sql">SELECT COUNT(*) AS total,
@@ -753,7 +904,7 @@ FROM mahasiswa;</pre>
   <!-- 20 GROUP BY -->
   <section class="section" id="sec-20">
     <div class="section-head"><span class="section-num">20</span><span class="section-title">GROUP BY</span></div>
-    <p class="section-desc">Mengelompokkan data untuk agregasi per kelompok.</p>
+    <p class="section-desc">Mengelompokkan data untuk agregasi per kelompok. Biasanya GROUP BY muncul bersama fungsi agregat seperti <code>COUNT()</code>, <code>SUM()</code>, <code>AVG()</code>, <code>MIN()</code>, <code>MAX()</code>, atau <code>GROUP_CONCAT()</code>.</p>
     <div class="query-card" data-result="q20">
       <div class="query-card-head"><span>DML</span><button class="run-btn">▶ Jalankan</button></div>
       <pre class="sql">SELECT jurusan, COUNT(*) AS jumlah
@@ -904,12 +1055,12 @@ ROLLBACK;</pre>
     <div class="section-head"><span class="section-num">27</span><span class="section-title">Kuis Interaktif</span></div>
     <p class="section-desc">Uji pemahaman tentang seluruh materi, dari DDL, operator WHERE, fungsi string/tanggal, join, sampai transaction.</p>
     <div class="quiz-box">
-      <div class="quiz-progress" id="quizProgress">Soal 1 / 10</div>
+      <div class="quiz-progress" id="quizProgress">Soal 1 / 15</div>
       <div class="quiz-q" id="quizQ"></div>
       <div class="quiz-opts" id="quizOpts"></div>
       <div class="quiz-feedback" id="quizFeedback"></div>
       <div class="quiz-nav">
-        <span class="quiz-score" id="quizScore">Skor: 0 / 10</span>
+        <span class="quiz-score" id="quizScore">Skor: 0 / 15</span>
         <button class="quiz-btn primary" id="quizNext" disabled>Soal berikutnya →</button>
       </div>
     </div>
@@ -948,8 +1099,8 @@ function typeHero(){
 typeHero();
 
 // highlight sql
-const KEYWORDS = ['CREATE','DATABASE','USE','TABLE','INT','VARCHAR','CHAR','TEXT','DATE','DECIMAL','BOOLEAN','ENUM','PRIMARY','KEY','FOREIGN','REFERENCES','ON','DELETE','CASCADE','SET','NULL','RESTRICT','UPDATE','ALTER','ADD','COLUMN','CONSTRAINT','DROP','IF','EXISTS','TRUNCATE','INSERT','INTO','VALUES','SELECT','FROM','WHERE','LIKE','REGEXP','IN','GROUP','BY','HAVING','INNER','JOIN','START','TRANSACTION','ROLLBACK','COMMIT','ORDER','ASC','DESC','COUNT','SUM','AVG','MAX','MIN','AND','OR','NOT','DEFAULT','UNIQUE','CHECK','AS'];
-const FUNCS = ['UPPER','LOWER','LENGTH','CURDATE','NOW','YEAR','MONTH','DAY','DATEDIFF','TIMESTAMPDIFF','CONCAT','LEFT','RIGHT','REPLACE','SUBSTR'];
+const KEYWORDS = ['CREATE','DATABASE','USE','TABLE','INT','VARCHAR','CHAR','TEXT','DATE','DECIMAL','BOOLEAN','ENUM','PRIMARY','KEY','FOREIGN','REFERENCES','ON','DELETE','CASCADE','SET','NULL','RESTRICT','UPDATE','ALTER','ADD','COLUMN','CONSTRAINT','DROP','IF','EXISTS','TRUNCATE','INSERT','INTO','VALUES','SELECT','DISTINCT','FROM','WHERE','LIKE','REGEXP','IN','BETWEEN','GROUP','BY','HAVING','INNER','JOIN','START','TRANSACTION','ROLLBACK','COMMIT','ORDER','ASC','DESC','LIMIT','COUNT','SUM','AVG','MAX','MIN','AND','OR','NOT','DEFAULT','UNIQUE','CHECK','AS','INTERVAL','DAY','MONTH','YEAR'];
+const FUNCS = ['UPPER','LOWER','LENGTH','CURDATE','NOW','YEAR','MONTH','DAY','DATEDIFF','TIMESTAMPDIFF','DATE_SUB','DATE_ADD','DATE_FORMAT','CONCAT','LEFT','RIGHT','REPLACE','SUBSTR','REVERSE','POSITION','LOCATE','INSERT','GROUP_CONCAT','ROUND','RAND'];
 
 function highlight(code){
   let escaped = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -986,10 +1137,12 @@ const RESULTS = {
   q13: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
   q13a: {cols:['nama'], rows:[['Budi'],['Siti'],['Andi']]},
   q13b: {cols:['nama','jurusan'], rows:[['Budi','Informatika'],['Siti','Sistem Informasi'],['Andi','Informatika']]},
+  q13distinct: {cols:['jurusan'], rows:[['Informatika'],['Sistem Informasi']]},
   q14eq: {cols:['nama','jurusan','email'], rows:[['Budi','Informatika','budi@mail.com'],['Andi','Informatika','andi@mail.com']]},
   q14like: {cols:['nama','jurusan','email'], rows:[['Budi','Informatika','budi@mail.com'],['Andi','Informatika','andi@mail.com']]},
   q14wild: {cols:['nama'], rows:[['Budi']]},
   q14cmp: {cols:['nama','usia'], rows:[['Budi','20'],['Siti','19'],['Andi','22']]},
+  q14between: {cols:['nama','usia'], rows:[['Budi','20'],['Siti','19'],['Andi','22']]},
   q15and: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
   q15or: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
   q15in: {cols:['npm','nama','jurusan','usia','email'], rows:[['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com'],['M003','Andi','Informatika','22','andi@mail.com']]},
@@ -999,12 +1152,22 @@ const RESULTS = {
   q16concat: {cols:['pesan'], rows:[['Halo, Budi! Selamat datang.'],['Halo, Siti! Selamat datang.'],['Halo, Andi! Selamat datang.']]},
   q16length: {cols:['nama','panjang_nama'], rows:[['Budi','4'],['Siti','4'],['Andi','4']]},
   q16replace: {cols:['jurusan_baru'], rows:[['Ilmu Komputer'],['Sistem Informasi'],['Ilmu Komputer']]},
+  q16replace2: {cols:['tanggal_format'], rows:[['2024-07-17']]},
+  q16insertfn: {cols:['no_hp_disensor'], rows:[['081XXXX7890']]},
   q16substr: {cols:['potongan'], rows:[['udi'],['iti'],['ndi']]},
+  q16reverse: {cols:['nama','nama_terbalik'], rows:[['Budi','iduB'],['Siti','itiS'],['Andi','idnA']]},
+  q16position: {cols:['email','posisi_at'], rows:[['budi@mail.com','5'],['siti@mail.com','5'],['andi@mail.com','5']]},
+  q16locate: {cols:['email','posisi_at'], rows:[['budi@mail.com','5'],['siti@mail.com','5'],['andi@mail.com','5']]},
+  q16groupconcat: {cols:['jurusan','daftar_mahasiswa'], rows:[['Informatika','Budi,Andi'],['Sistem Informasi','Siti']]},
   q17curdate: {cols:['hari_ini'], rows:[['2026-07-16']]},
   q17now: {cols:['waktu_sekarang'], rows:[['2026-07-16 09:41:07']]},
   q17datediff: {cols:['selisih_hari'], rows:[['7320']]},
+  q17datesub: {cols:['tanggal_30_hari_lalu'], rows:[['2026-06-16']]},
   q17tsdiff: {cols:['umur_dalam_bulan'], rows:[['240']]},
   q17dmy: {cols:['tgl','bln','thn'], rows:[['14','5','2006']]},
+  q17dateformat: {cols:['tanggal_rapi'], rows:[['14 May 2006']]},
+  q17bround: {cols:['rata_mentah','rata_dibulatkan'], rows:[['20.3333','20.3']]},
+  q17brand: {cols:['nama'], rows:[['Siti']]},
   q18: {cols:['npm','nama','jurusan','usia','email'], rows:[['M003','Andi','Informatika','22','andi@mail.com'],['M001','Budi','Informatika','20','budi@mail.com'],['M002','Siti','Sistem Informasi','19','siti@mail.com']]},
   q19: {cols:['total','rata_usia'], rows:[['3','20.3333']]},
   q20: {cols:['jurusan','jumlah'], rows:[['Informatika','2'],['Sistem Informasi','1']]},
@@ -1061,7 +1224,17 @@ const QUIZ = [
   {q:"Setelah COMMIT dijalankan pada sebuah transaksi, kita masih bisa ROLLBACK untuk membatalkannya. Benar atau salah?",
    opts:["Benar","Salah"], correct:1, fb:"Salah — setelah COMMIT, perubahan sudah permanen dan tidak bisa dibatalkan dengan ROLLBACK."},
   {q:"Perintah yang digunakan untuk mengubah nilai pada baris yang sudah ada di tabel adalah...",
-   opts:["INSERT","UPDATE","DELETE","ALTER"], correct:1, fb:"UPDATE digunakan untuk mengubah nilai baris yang sudah ada."}
+   opts:["INSERT","UPDATE","DELETE","ALTER"], correct:1, fb:"UPDATE digunakan untuk mengubah nilai baris yang sudah ada."},
+  {q:"BETWEEN 18 AND 22 setara dengan kondisi mana di bawah ini?",
+   opts:["usia > 18 AND usia < 22","usia >= 18 AND usia <= 22","usia = 18 OR usia = 22","usia != 18 AND usia != 22"], correct:1, fb:"BETWEEN bersifat inklusif, mencakup kedua batasnya."},
+  {q:"Apa perbedaan utama fungsi INSERT() (string) dengan REPLACE()?",
+   opts:["Tidak ada bedanya","INSERT() mengganti karakter di posisi tertentu apa pun isinya, REPLACE() mencari dulu potongan teks yang cocok","INSERT() hanya untuk angka","REPLACE() hanya bisa dipakai sekali per query"], correct:1, fb:"INSERT() mengganti langsung berdasarkan posisi, REPLACE() mencari isi teks yang sama dulu."},
+  {q:"SELECT DISTINCT digunakan untuk...",
+   opts:["Mengurutkan data","Menghapus data duplikat dari hasil","Menghitung rata-rata","Menggabungkan dua tabel"], correct:1, fb:"DISTINCT menampilkan hanya nilai-nilai yang unik."},
+  {q:"Pada DATE_FORMAT, kode %M menghasilkan...",
+   opts:["Angka bulan (01-12)","Nama bulan dalam bentuk teks","Angka tahun","Angka menit"], correct:1, fb:"%M (huruf besar) menghasilkan nama bulan sebagai string, sedangkan %m (huruf kecil) menghasilkan angka bulan."},
+  {q:"Fungsi yang menggabungkan nilai-nilai dari banyak baris dalam satu grup menjadi satu string adalah...",
+   opts:["CONCAT","GROUP_CONCAT","SUBSTR","REVERSE"], correct:1, fb:"GROUP_CONCAT adalah fungsi agregat untuk menggabungkan nilai antar baris dalam satu grup."}
 ];
 let qi = 0, score = 0, answered = false;
 const quizQ = document.getElementById('quizQ');
